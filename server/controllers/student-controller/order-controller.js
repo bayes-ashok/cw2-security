@@ -218,7 +218,7 @@ const createKhaltiOrder = async (req, res) => {
       courseId,
       coursePricing,
     } = req.body;
-
+    console.log("checkpoint")
     const coursePricin = coursePricing * 100; // Number value
     const coursePricingStr = String(coursePricin);
 
@@ -226,8 +226,8 @@ const createKhaltiOrder = async (req, res) => {
     const response = await axios.post(
       "https://dev.khalti.com/api/v2/epayment/initiate/",
       {
-        "return_url": "http://localhost:5173/payment-return",
-        "website_url": "http://localhost:5173",
+        "return_url": "https://localhost:5173/payment-return",
+        "website_url": "https://localhost:5173",
         "amount": coursePricingStr,
         "purchase_order_id": "order01", // Example order ID, you can generate a dynamic one
         "purchase_order_name": "Course Payment",

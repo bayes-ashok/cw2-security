@@ -262,6 +262,7 @@ function StudentViewCourseDetailsPage() {
               {/* Khalti Payment Button */}
               <button
                 onClick={async () => {
+                  console.log("hi")
                   const paymentPayload = {
                     userId: auth?.user?._id,
                     fName: auth?.user?.fName,
@@ -283,7 +284,7 @@ function StudentViewCourseDetailsPage() {
 
                   try {
                     const response = await axios.post(
-                      "http://localhost:8000/student/order/create-khalti",
+                      "https://localhost:443/student/order/create-khalti",
                       paymentPayload
                     );
                     if (response.data.success) {
@@ -293,7 +294,6 @@ function StudentViewCourseDetailsPage() {
                     }
                   } catch (error) {
                     console.error(error);
-                    alert("An error occurred while processing payment.");
                   }
                 }}
                 className="w-auto h-auto mx-auto flex"
