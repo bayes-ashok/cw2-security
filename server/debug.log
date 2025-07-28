@@ -1,0 +1,5 @@
+2025-02-26T16:45:08.663Z - ========== START DEBUGGING ==========
+2025-02-26T16:45:08.664Z - ERROR: Converting circular structure to JSON
+    --> starting at object with constructor 'Socket'
+    |     property 'parser' -> object with constructor 'HTTPParser'
+    --- property 'socket' closes the circle
