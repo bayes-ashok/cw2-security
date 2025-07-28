@@ -42,7 +42,7 @@ const PaymentReturnPage = () => {
   const verifyPayment = async (transactionId) => {
     try {
       const response = await axios.post(
-        "http://localhost:8000/student/order/verify-payment",
+        "https://localhost:443/student/order/verify-payment",
         {
           transactionId, // Send the transactionId to the backend
         }
@@ -73,7 +73,6 @@ const PaymentReturnPage = () => {
         },
         {
           headers: {
-            Authorization: "Bearer 41786720168241bb94f45448c2b5f4fb", // Using env variable
             "Content-Type": "application/json",
           },
         }

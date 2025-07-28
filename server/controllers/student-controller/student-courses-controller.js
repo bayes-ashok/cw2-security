@@ -1,26 +1,31 @@
 const StudentCourses = require("../../models/StudentCourses");
 const Course = require("../../models/Course");
 const User = require("../../models/User");
-
 const getCoursesByStudentId = async (req, res) => {
   try {
     const { studentId } = req.params;
-    const studentBoughtCourses = await StudentCourses.findOne({
-      userId: studentId,
-    });
+    const studentBoughtCourses = await StudentCourses.findOne({ userId: studentId });
+
+    if (!studentBoughtCourses) {
+      return res.status(404).json({
+        success: false,
+        message: "No courses found for this student",
+      });
+    }
 
     res.status(200).json({
       success: true,
-      data: studentBoughtCourses.courses,
+      data: studentBoughtCourses.courses || [],
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
       success: false,
-      message: "Some error occured!",
+      message: "Some error occurred!",
     });
   }
 };
+
 
 const enrollStudentInCourse = async (req, res) => {
   try {
