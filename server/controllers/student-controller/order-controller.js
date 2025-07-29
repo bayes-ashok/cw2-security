@@ -1,70 +1,141 @@
+const { body, validationResult } = require('express-validator');
 const paypal = require("../../helpers/paypal");
 const Order = require("../../models/Order");
 const Course = require("../../models/Course");
 const User = require("../../models/User");
-
 const StudentCourses = require("../../models/StudentCourses");
 const axios = require("axios");
+const sanitizeHtml = require('sanitize-html');
+const logger = require("../../middleware/logger");
 
-const createOrder = async (req, res) => {
-  try {
-    const {
-      userId,
-      fName,
-      email,
-      orderStatus,
-      paymentMethod,
-      paymentStatus,
-      orderDate,
-      paymentId,
-      payerId,
-      instructorId,
-      instructorName,
-      courseImage,
-      courseTitle,
-      courseId,
-      coursePricing,
-    } = req.body;
+const createOrder = [
+  // Validation rules
+  body('userId')
+    .notEmpty().withMessage('User ID is required')
+    .isMongoId().withMessage('Invalid user ID')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('fName')
+    .trim()
+    .notEmpty().withMessage('First name is required')
+    .isLength({ min: 2 }).withMessage('First name must be at least 2 characters long')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('email')
+    .isEmail().withMessage('Please provide a valid email address')
+    .normalizeEmail()
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('orderStatus')
+    .notEmpty().withMessage('Order status is required')
+    .isIn(['pending', 'confirmed']).withMessage('Invalid order status')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('paymentMethod')
+    .notEmpty().withMessage('Payment method is required')
+    .isIn(['paypal']).withMessage('Invalid payment method')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('paymentStatus')
+    .notEmpty().withMessage('Payment status is required')
+    .isIn(['pending', 'paid']).withMessage('Invalid payment status')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('orderDate')
+    .notEmpty().withMessage('Order date is required')
+    .isISO8601().withMessage('Invalid date format')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('paymentId')
+    .optional()
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('payerId')
+    .optional()
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('instructorId')
+    .notEmpty().withMessage('Instructor ID is required')
+    .isMongoId().withMessage('Invalid instructor ID')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('instructorName')
+    .trim()
+    .notEmpty().withMessage('Instructor name is required')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('courseImage')
+    .optional()
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('courseTitle')
+    .trim()
+    .notEmpty().withMessage('Course title is required')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('courseId')
+    .notEmpty().withMessage('Course ID is required')
+    .isMongoId().withMessage('Invalid course ID')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('coursePricing')
+    .notEmpty().withMessage('Course pricing is required')
+    .isFloat({ min: 0 }).withMessage('Course pricing must be a positive number')
+    .customSanitizer((value) => sanitizeHtml(value.toString(), { allowedTags: [], allowedAttributes: {} })),
 
-    const create_payment_json = {
-      intent: "sale",
-      payer: {
-        payment_method: "paypal",
-      },
-      redirect_urls: {
-        return_url: "http://localhost:5173/paypal-return",
-        cancel_url: "http://localhost:5173/payment-cancel",
-      },
-      transactions: [
-        {
-          item_list: {
-            items: [
-              {
-                name: courseTitle,
-                sku: courseId,
-                price: coursePricing,
-                currency: "USD",
-                quantity: 1,
-              },
-            ],
-          },
-          amount: {
-            currency: "USD",
-            total: coursePricing.toFixed(2),
-          },
-          description: courseTitle,
+  // Controller logic
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      logger.error('Validation errors during PayPal order creation', { errors: errors.array() });
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
+
+    try {
+      const {
+        userId,
+        fName,
+        email,
+        orderStatus,
+        paymentMethod,
+        paymentStatus,
+        orderDate,
+        paymentId,
+        payerId,
+        instructorId,
+        instructorName,
+        courseImage,
+        courseTitle,
+        courseId,
+        coursePricing,
+      } = req.body;
+
+      const create_payment_json = {
+        intent: "sale",
+        payer: {
+          payment_method: "paypal",
         },
-      ],
-    };
+        redirect_urls: {
+          return_url: "http://localhost:5173/paypal-return",
+          cancel_url: "http://localhost:5173/payment-cancel",
+        },
+        transactions: [
+          {
+            item_list: {
+              items: [
+                {
+                  name: courseTitle,
+                  sku: courseId,
+                  price: coursePricing.toFixed(2),
+                  currency: "USD",
+                  quantity: 1,
+                },
+              ],
+            },
+            amount: {
+              currency: "USD",
+              total: coursePricing.toFixed(2),
+            },
+            description: courseTitle,
+          },
+        ],
+      };
 
-    paypal.payment.create(create_payment_json, async (error, paymentInfo) => {
-      if (error) {
-        console.log(error);
-        return res.status(500).json({
-          success: false,
-          message: "Error while creating paypal payment!",
-        });
-      } else {
+      paypal.payment.create(create_payment_json, async (error, paymentInfo) => {
+        if (error) {
+          logger.error('Error creating PayPal payment', { error: error.message });
+          return res.status(500).json({
+            success: false,
+            message: "Error while creating PayPal payment",
+          });
+        }
+
         const newlyCreatedCourseOrder = new Order({
           userId,
           fName,
@@ -84,9 +155,10 @@ const createOrder = async (req, res) => {
         });
 
         await newlyCreatedCourseOrder.save();
+        logger.info('PayPal order created successfully', { orderId: newlyCreatedCourseOrder._id, courseId });
 
         const approveUrl = paymentInfo.links.find(
-          (link) => link.rel == "approval_url"
+          (link) => link.rel === "approval_url"
         ).href;
 
         res.status(201).json({
@@ -96,46 +168,59 @@ const createOrder = async (req, res) => {
             orderId: newlyCreatedCourseOrder._id,
           },
         });
-      }
-    });
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      success: false,
-      message: "Some error occured!",
-    });
+      });
+    } catch (error) {
+      logger.error('Error during PayPal order creation', { error: error.message });
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+        error: error.message,
+      });
+    }
   }
-};
+];
 
+const capturePaymentAndFinalizeOrder = [
+  // Validation rules
+  body('paymentId')
+    .notEmpty().withMessage('Payment ID is required')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('payerId')
+    .notEmpty().withMessage('Payer ID is required')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('orderId')
+    .notEmpty().withMessage('Order ID is required')
+    .isMongoId().withMessage('Invalid order ID')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
 
+  // Controller logic
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      logger.error('Validation errors during PayPal payment capture', { errors: errors.array() });
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
 
-
-
-const capturePaymentAndFinalizeOrder = async (req, res) => {
     try {
       const { paymentId, payerId, orderId } = req.body;
-  
+
       let order = await Order.findById(orderId);
-  
       if (!order) {
+        logger.warn('Order not found during payment capture', { orderId });
         return res.status(404).json({
           success: false,
-          message: "Order can not be found",
+          message: "Order not found",
         });
       }
-  
+
       order.paymentStatus = "paid";
       order.orderStatus = "confirmed";
       order.paymentId = paymentId;
       order.payerId = payerId;
-  
       await order.save();
-  
-      //update out student course model
-      const studentCourses = await StudentCourses.findOne({
-        userId: order.userId,
-      });
-  
+      logger.info('PayPal payment captured and order finalized', { orderId, courseId: order.courseId });
+
+      let studentCourses = await StudentCourses.findOne({ userId: order.userId });
       if (studentCourses) {
         studentCourses.courses.push({
           courseId: order.courseId,
@@ -145,8 +230,8 @@ const capturePaymentAndFinalizeOrder = async (req, res) => {
           dateOfPurchase: order.orderDate,
           courseImage: order.courseImage,
         });
-  
         await studentCourses.save();
+        logger.info('Student courses updated', { userId: order.userId, courseId: order.courseId });
       } else {
         const newStudentCourses = new StudentCourses({
           userId: order.userId,
@@ -161,11 +246,10 @@ const capturePaymentAndFinalizeOrder = async (req, res) => {
             },
           ],
         });
-  
         await newStudentCourses.save();
+        logger.info('New student courses record created', { userId: order.userId, courseId: order.courseId });
       }
-  
-      //update the course schema students
+
       await Course.findByIdAndUpdate(order.courseId, {
         $addToSet: {
           students: {
@@ -176,268 +260,370 @@ const capturePaymentAndFinalizeOrder = async (req, res) => {
           },
         },
       });
-  
+      logger.info('Course students updated', { courseId: order.courseId, studentId: order.userId });
+
       res.status(200).json({
         success: true,
         message: "Order confirmed",
         data: order,
       });
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      logger.error('Error capturing PayPal payment', { error: error.message });
       res.status(500).json({
         success: false,
-        message: "Some error occured!",
+        message: "Internal server error",
+        error: error.message,
       });
     }
-  };
-  
+  }
+];
 
-// ================================khalti==================================
+let globalOrderDetails = {};
 
+const createKhaltiOrder = [
+  // Validation rules
+  body('userId')
+    .notEmpty().withMessage('User ID is required')
+    .isMongoId().withMessage('Invalid user ID')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('fName')
+    .trim()
+    .notEmpty().withMessage('First name is required')
+    .isLength({ min: 2 }).withMessage('First name must be at least 2 characters long')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('email')
+    .isEmail().withMessage('Please provide a valid email address')
+    .normalizeEmail()
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('phone')
+    .notEmpty().withMessage('Phone number is required')
+    .isMobilePhone().withMessage('Invalid phone number')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('orderStatus')
+    .notEmpty().withMessage('Order status is required')
+    .isIn(['pending', 'confirmed']).withMessage('Invalid order status')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('paymentMethod')
+    .notEmpty().withMessage('Payment method is required')
+    .isIn(['khalti']).withMessage('Invalid payment method')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('paymentStatus')
+    .notEmpty().withMessage('Payment status is required')
+    .isIn(['pending', 'paid']).withMessage('Invalid payment status')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('orderDate')
+    .notEmpty().withMessage('Order date is required')
+    .isISO8601().withMessage('Invalid date format')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('paymentId')
+    .optional()
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('payerId')
+    .optional()
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('instructorId')
+    .notEmpty().withMessage('Instructor ID is required')
+    .isMongoId().withMessage('Invalid instructor ID')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('instructorName')
+    .trim()
+    .notEmpty().withMessage('Instructor name is required')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('courseImage')
+    .optional()
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('courseTitle')
+    .trim()
+    .notEmpty().withMessage('Course title is required')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('courseId')
+    .notEmpty().withMessage('Course ID is required')
+    .isMongoId().withMessage('Invalid course ID')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('coursePricing')
+    .notEmpty().withMessage('Course pricing is required')
+    .isFloat({ min: 0 }).withMessage('Course pricing must be a positive number')
+    .customSanitizer((value) => sanitizeHtml(value.toString(), { allowedTags: [], allowedAttributes: {} })),
 
+  // Controller logic
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      logger.error('Validation errors during Khalti order creation', { errors: errors.array() });
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
 
-let globalOrderDetails = {}; // Global variable to store the order details
-
-const createKhaltiOrder = async (req, res) => {
-  try {
-    const {
-      userId,
-      fName,
-      email,
-      phone,
-      orderStatus,
-      paymentMethod,
-      paymentStatus,
-      orderDate,
-      paymentId,
-      payerId,
-      instructorId,
-      instructorName,
-      courseImage,
-      courseTitle,
-      courseId,
-      coursePricing,
-    } = req.body;
-    console.log("checkpoint")
-    const coursePricin = coursePricing * 100; // Number value
-    const coursePricingStr = String(coursePricin);
-
-    // Call Khalti's payment API to initiate payment
-    const response = await axios.post(
-      "https://dev.khalti.com/api/v2/epayment/initiate/",
-      {
-        "return_url": "https://localhost:5173/payment-return",
-        "website_url": "https://localhost:5173",
-        "amount": coursePricingStr,
-        "purchase_order_id": "order01", // Example order ID, you can generate a dynamic one
-        "purchase_order_name": "Course Payment",
-        "customer_info": {
-          "name": fName,
-          "email": email,
-          "phone": phone
-        }
-      },
-      {
-        headers: {
-          'Authorization': 'key 41786720168241bb94f45448c2b5f4fb',
-          'Content-Type': 'application/json',
-        },
-      }
-    );
-
-    if (response.data.payment_url) {
-      // Store the order details in the global variable
-      globalOrderDetails = {
+    try {
+      const {
         userId,
         fName,
         email,
+        phone,
         orderStatus,
         paymentMethod,
         paymentStatus,
         orderDate,
-        paymentId: response.data.transaction_id, // This is the transaction ID from Khalti
-        payerId: userId, // Assuming userId as payerId
+        paymentId,
+        payerId,
         instructorId,
         instructorName,
         courseImage,
         courseTitle,
         courseId,
         coursePricing,
+      } = req.body;
+
+      const coursePricin = coursePricing * 100;
+      const coursePricingStr = String(coursePricin);
+
+      const response = await axios.post(
+        "https://dev.khalti.com/api/v2/epayment/initiate/",
+        {
+          return_url: "http://localhost:5173/payment-return",
+          website_url: "http://localhost:5173",
+          amount: coursePricingStr,
+          purchase_order_id: `order_${userId}_${Date.now()}`,
+          purchase_order_name: "Course Payment",
+          customer_info: {
+            name: fName,
+            email,
+            phone,
+          },
+        },
+        {
+          headers: {
+            Authorization: 'key 41786720168241bb94f45448c2b5f4fb',
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.data.payment_url) {
+        globalOrderDetails = {
+          userId,
+          fName,
+          email,
+          orderStatus,
+          paymentMethod,
+          paymentStatus,
+          orderDate,
+          paymentId: response.data.transaction_id,
+          payerId: userId,
+          instructorId,
+          instructorName,
+          courseImage,
+          courseTitle,
+          courseId,
+          coursePricing,
+        };
+        logger.info('Khalti order initiated', { transactionId: response.data.transaction_id, courseId });
+
+        res.status(200).json({
+          success: true,
+          payment_url: response.data.payment_url,
+        });
+      } else {
+        logger.warn('Failed to get Khalti payment URL', { courseId });
+        res.status(500).json({ success: false, message: "Failed to get payment URL" });
+      }
+    } catch (error) {
+      logger.error('Error during Khalti order creation', { error: error.message });
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+        error: error.message,
+      });
+    }
+  }
+];
+
+const verifyPayment = [
+  // Validation rules
+  body('transactionId')
+    .notEmpty().withMessage('Transaction ID is required')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+
+  // Controller logic
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      logger.error('Validation errors during Khalti payment verification', { errors: errors.array() });
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
+
+    try {
+      const { transactionId } = req.body;
+
+      const newOrder = new Order({
+        userId: globalOrderDetails.userId,
+        fName: globalOrderDetails.fName,
+        email: globalOrderDetails.email,
+        orderStatus: "confirmed",
+        paymentMethod: "khalti",
+        paymentStatus: "paid",
+        orderDate: new Date(globalOrderDetails.orderDate),
+        paymentId: transactionId || null,
+        payerId: globalOrderDetails.payerId,
+        instructorId: globalOrderDetails.instructorId,
+        instructorName: globalOrderDetails.instructorName,
+        courseImage: globalOrderDetails.courseImage,
+        courseTitle: globalOrderDetails.courseTitle,
+        courseId: globalOrderDetails.courseId,
+        coursePricing: globalOrderDetails.coursePricing.toString(),
+      });
+
+      await newOrder.save();
+      logger.info('Khalti order saved successfully', { orderId: newOrder._id, courseId: newOrder.courseId });
+
+      let studentCourses = await StudentCourses.findOne({ userId: globalOrderDetails.userId });
+      const courseDetails = {
+        courseId: globalOrderDetails.courseId,
+        title: globalOrderDetails.courseTitle,
+        instructorId: globalOrderDetails.instructorId,
+        instructorName: globalOrderDetails.instructorName,
+        dateOfPurchase: new Date(),
+        courseImage: globalOrderDetails.courseImage,
       };
 
-
-      console.log(globalOrderDetails)
-
-      // Send the payment URL and global order details back to frontend for user to complete payment
-      return res.status(200).json({
-        success: true,
-        payment_url: response.data.payment_url,
-      });
-    } else {
-      return res.status(500).json({ success: false, message: "Failed to get payment URL" });
-    }
-  } catch (error) {
-    console.error("Khalti Payment Error:", error);
-    return res.status(500).json({ success: false, message: "Internal server error" });
-  }
-};
-
-
-
-
-const verifyPayment = async (req, res) => {
-  try {
-    const { transactionId } = req.body; // Extract transactionId from the request body
-
-    // Save the order in the Order collection
-    const newOrder = new Order({
-      userId: globalOrderDetails.userId,
-      fName: globalOrderDetails.fName,
-      email: globalOrderDetails.email,
-      orderStatus: "confirmed",
-      paymentMethod: "khalti",
-      paymentStatus: "paid",
-      orderDate: new Date(globalOrderDetails.orderDate),
-      paymentId: transactionId || null, // Store the transactionId in paymentId
-      payerId: globalOrderDetails.payerId,
-      instructorId: globalOrderDetails.instructorId,
-      instructorName: globalOrderDetails.instructorName,
-      courseImage: globalOrderDetails.courseImage,
-      courseTitle: globalOrderDetails.courseTitle,
-      courseId: globalOrderDetails.courseId,
-      coursePricing: globalOrderDetails.coursePricing.toString() // Ensure it's a string
-    });
-
-    await newOrder.save(); // Save the new order to the database
-    console.log("Order saved successfully!");
-
-    // Now update the student's courses
-    const { userId, fName, email, courseId, courseTitle, instructorId, instructorName, courseImage, coursePricing } = globalOrderDetails;
-
-    // Check if the student already has a record in the StudentCourses collection
-    let studentCourses = await StudentCourses.findOne({ userId });
-
-    const courseDetails = {
-      courseId,
-      title: courseTitle,
-      instructorId,
-      instructorName,
-      dateOfPurchase: new Date(), // The date when the course was purchased
-      courseImage,
-    };
-
-    if (studentCourses) {
-      // If the student already has a record, add the new course to their courses array
-      studentCourses.courses.push(courseDetails);
-    } else {
-      // If the student doesn't have a record, create a new one
-      studentCourses = new StudentCourses({
-        userId,
-        courses: [courseDetails], // Add the first course to the array
-      });
-    }
-
-    await studentCourses.save(); // Save or update the student's courses
-    console.log("Student course record updated successfully!");
-
-    // Now update the Course collection to add the student
-    const course = await Course.findOne({ _id: courseId });
-
-    if (course) {
-      // Check if the student is already in the students list
-      const studentExists = course.students.some((student) => student.studentId === userId);
-
-      if (!studentExists) {
-        course.students.push({
-          studentId: userId,
-          studentName: fName,
-          studentEmail: email,
-          paidAmount: coursePricing.toString(),
-        });
-
-        await course.save();
-        console.log("Student added to the course successfully!");
+      if (studentCourses) {
+        studentCourses.courses.push(courseDetails);
+        await studentCourses.save();
+        logger.info('Student courses updated', { userId: globalOrderDetails.userId, courseId: globalOrderDetails.courseId });
       } else {
-        console.log("Student already enrolled in the course.");
+        studentCourses = new StudentCourses({
+          userId: globalOrderDetails.userId,
+          courses: [courseDetails],
+        });
+        await studentCourses.save();
+        logger.info('New student courses record created', { userId: globalOrderDetails.userId, courseId: globalOrderDetails.courseId });
       }
-    } else {
-      console.error("Course not found!");
-      return res.status(404).json({ message: "Course not found!" });
-    }
 
-    // Respond to the frontend
-    res.status(200).json({ message: "Payment verified and course added successfully" });
-  } catch (error) {
-    console.error("Error saving order, updating student courses, or updating course students:", error);
-    res.status(500).json({ message: "Error processing payment and updating records" }); // Handle errors properly
-  }
-};
-
-const jwt = require('jsonwebtoken');  // If using JWT for userToken
-
-// Safe Stringify function to handle circular references
-const safeStringify = (obj) => {
-  try {
-    return JSON.stringify(obj);
-  } catch (error) {
-    return '[Circular reference]'; // Return a placeholder if circular reference is detected
-  }
-};
-
-
-
-const initiateKhaltiPayment = async (req, res) => {
-  try {
-    const { userId, fName, email, phone, coursePricing } = req.body;
-
-    const amountInPaisa = coursePricing * 100; // Convert to paisa
-    const amountStr = String(amountInPaisa);
-
-    // Khalti API request payload
-    const khaltiPayload = {
-      return_url: "http://localhost:5173/payment-return",
-      website_url: "http://localhost:5173",
-      amount: amountStr,
-      purchase_order_id: `order_${userId}_${Date.now()}`, // Dynamic order ID
-      purchase_order_name: "Course Payment",
-      customer_info: {
-        name: fName,
-        email,
-        phone,
-      },
-    };
-
-    // Make request to Khalti API
-    const response = await axios.post(
-      "https://dev.khalti.com/api/v2/epayment/initiate/",
-      khaltiPayload,
-      {
-        headers: {
-          Authorization: "key 41786720168241bb94f45448c2b5f4fb",
-          "Content-Type": "application/json",
-        },
+      const course = await Course.findOne({ _id: globalOrderDetails.courseId });
+      if (course) {
+        const studentExists = course.students.some((student) => student.studentId.toString() === globalOrderDetails.userId);
+        if (!studentExists) {
+          course.students.push({
+            studentId: globalOrderDetails.userId,
+            studentName: globalOrderDetails.fName,
+            studentEmail: globalOrderDetails.email,
+            paidAmount: globalOrderDetails.coursePricing.toString(),
+          });
+          await course.save();
+          logger.info('Student added to course', { courseId: globalOrderDetails.courseId, studentId: globalOrderDetails.userId });
+        } else {
+          logger.info('Student already enrolled in course', { courseId: globalOrderDetails.courseId, studentId: globalOrderDetails.userId });
+        }
+      } else {
+        logger.warn('Course not found during payment verification', { courseId: globalOrderDetails.courseId });
+        return res.status(404).json({ success: false, message: "Course not found" });
       }
-    );
 
-    if (response.data.payment_url) {
-      return res.status(200).json({
+      res.status(200).json({
         success: true,
-        payment_url: response.data.payment_url,
-        transaction_id: response.data.transaction_id, // Pass transaction ID for reference
+        message: "Payment verified and course added successfully",
       });
-    } else {
-      return res.status(500).json({
+    } catch (error) {
+      logger.error('Error verifying Khalti payment', { error: error.message });
+      res.status(500).json({
         success: false,
-        message: "Failed to get payment URL",
+        message: "Internal server error",
+        error: error.message,
       });
     }
-  } catch (error) {
-    console.error("Khalti Payment Error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
   }
-};
+];
 
-module.exports = { createOrder, capturePaymentAndFinalizeOrder, createKhaltiOrder, verifyPayment,initiateKhaltiPayment };
+const initiateKhaltiPayment = [
+  // Validation rules
+  body('userId')
+    .notEmpty().withMessage('User ID is required')
+    .isMongoId().withMessage('Invalid user ID')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('fName')
+    .trim()
+    .notEmpty().withMessage('First name is required')
+    .isLength({ min: 2 }).withMessage('First name must be at least 2 characters long')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('email')
+    .isEmail().withMessage('Please provide a valid email address')
+    .normalizeEmail()
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('phone')
+    .notEmpty().withMessage('Phone number is required')
+    .isMobilePhone().withMessage('Invalid phone number')
+    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('coursePricing')
+    .notEmpty().withMessage('Course pricing is required')
+    .isFloat({ min: 0 }).withMessage('Course pricing must be a positive number')
+    .customSanitizer((value) => sanitizeHtml(value.toString(), { allowedTags: [], allowedAttributes: {} })),
+
+  // Controller logic
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      logger.error('Validation errors during Khalti payment initiation', { errors: errors.array() });
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
+
+    try {
+      const { userId, fName, email, phone, coursePricing } = req.body;
+
+      const amountInPaisa = coursePricing * 100;
+      const amountStr = String(amountInPaisa);
+
+      const khaltiPayload = {
+        return_url: "http://localhost:5173/payment-return",
+        website_url: "http://localhost:5173",
+        amount: amountStr,
+        purchase_order_id: `order_${userId}_${Date.now()}`,
+        purchase_order_name: "Course Payment",
+        customer_info: {
+          name: fName,
+          email,
+          phone,
+        },
+      };
+
+      const response = await axios.post(
+        "https://dev.khalti.com/api/v2/epayment/initiate/",
+        khaltiPayload,
+        {
+          headers: {
+            Authorization: "key 41786720168241bb94f45448c2b5f4fb",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.data.payment_url) {
+        logger.info('Khalti payment initiated', { transactionId: response.data.transaction_id, userId });
+        res.status(200).json({
+          success: true,
+          payment_url: response.data.payment_url,
+          transaction_id: response.data.transaction_id,
+        });
+      } else {
+        logger.warn('Failed to get Khalti payment URL', { userId });
+        res.status(500).json({
+          success: false,
+          message: "Failed to get payment URL",
+        });
+      }
+    } catch (error) {
+      logger.error('Error initiating Khalti payment', { error: error.message });
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+        error: error.message,
+      });
+    }
+  }
+];
+
+module.exports = {
+  createOrder,
+  capturePaymentAndFinalizeOrder,
+  createKhaltiOrder,
+  verifyPayment,
+  initiateKhaltiPayment
+};
