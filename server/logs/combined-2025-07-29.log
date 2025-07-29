@@ -1,1 +1,35 @@
 {"email":"ashoksubsc46@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-29T13:42:34.415Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-29T13:54:48.714Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-29T13:54:48.741Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Checked course purchase status","purchased":true,"studentId":"68877c6e3db24fb19ab58a4a","timestamp":"2025-07-29T13:54:50.143Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"No progress found for course","timestamp":"2025-07-29T13:54:50.208Z","userId":"68877c6e3db24fb19ab58a4a"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-29T13:54:53.188Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-29T13:54:53.220Z"}
+{"courseId":"67c553ed3964626e20f05575","level":"info","message":"Checked course purchase status","purchased":false,"studentId":"68877c6e3db24fb19ab58a4a","timestamp":"2025-07-29T13:54:54.411Z"}
+{"courseId":"67c553ed3964626e20f05575","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-29T13:54:54.452Z","title":"IQ & Logical Reasoning for NASU"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-29T13:54:55.992Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-29T13:54:56.010Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Checked course purchase status","purchased":true,"studentId":"68877c6e3db24fb19ab58a4a","timestamp":"2025-07-29T13:54:57.386Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"No progress found for course","timestamp":"2025-07-29T13:54:57.417Z","userId":"68877c6e3db24fb19ab58a4a"}
+{"courseId":"67c553783964626e20f05567","lectureId":"67c553783964626e20f05568","level":"info","message":"New course progress created","timestamp":"2025-07-29T13:55:04.564Z","userId":"68877c6e3db24fb19ab58a4a"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course progress retrieved successfully","timestamp":"2025-07-29T13:55:04.586Z","userId":"68877c6e3db24fb19ab58a4a"}
+{"courseId":"67c553783964626e20f05567","lectureId":"67c553783964626e20f05569","level":"info","message":"Lecture marked as viewed","timestamp":"2025-07-29T13:55:11.803Z","userId":"68877c6e3db24fb19ab58a4a"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course progress retrieved successfully","timestamp":"2025-07-29T13:55:11.826Z","userId":"68877c6e3db24fb19ab58a4a"}
+{"courseCount":1,"level":"info","message":"Retrieved courses for student","studentId":"68877c6e3db24fb19ab58a4a","timestamp":"2025-07-29T13:55:15.022Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-29T14:02:41.799Z"}
+{"email":"ashoksubsc46@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-29T14:04:55.325Z"}
+{"errors":[{"location":"body","msg":"Password must be at least 6 characters long","path":"password","type":"field","value":"1"},{"location":"body","msg":"Password must contain at least one uppercase letter, one lowercase letter, and one number","path":"password","type":"field","value":"1"},{"location":"body","msg":"Captcha token is required","path":"captchaToken","type":"field"}],"level":"error","message":"Validation errors during user registration","timestamp":"2025-07-29T14:05:13.752Z"}
+{"errors":[{"location":"body","msg":"Password must be at least 6 characters long","path":"password","type":"field","value":"q"},{"location":"body","msg":"Password must contain at least one uppercase letter, one lowercase letter, and one number","path":"password","type":"field","value":"q"}],"level":"error","message":"Validation errors during user update","timestamp":"2025-07-29T14:05:45.202Z"}
+{"level":"warn","message":"User not found during update","timestamp":"2025-07-29T14:06:06.572Z"}
+{"level":"warn","message":"User not found during update","timestamp":"2025-07-29T14:08:36.557Z"}
+{"level":"warn","message":"User not found during update","timestamp":"2025-07-29T14:09:59.719Z"}
+{"level":"warn","message":"User not found during update","timestamp":"2025-07-29T14:10:17.447Z"}
+{"level":"warn","message":"Incorrect current password during user update","timestamp":"2025-07-29T14:11:39.393Z","userId":"68877c6e3db24fb19ab58a4a"}
+{"email":"ashoksubsc46@gmail.com","level":"info","message":"User details updated successfully","timestamp":"2025-07-29T14:11:49.882Z","userId":"68877c6e3db24fb19ab58a4a"}
+{"email":"ashoksubsc46@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-29T14:20:05.813Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-29T14:20:05.894Z"}
+{"email":"ashoksubsc46@gmail.com","level":"info","message":"User details updated successfully","timestamp":"2025-07-29T14:21:03.949Z","userId":"68877c6e3db24fb19ab58a4a"}
+{"level":"warn","message":"Incorrect current password during user update","timestamp":"2025-07-29T14:21:17.363Z","userId":"68877c6e3db24fb19ab58a4a"}
+{"level":"warn","message":"Incorrect current password during user update","timestamp":"2025-07-29T14:21:24.154Z","userId":"68877c6e3db24fb19ab58a4a"}
+{"level":"warn","message":"Incorrect current password during user update","timestamp":"2025-07-29T14:21:45.055Z","userId":"68877c6e3db24fb19ab58a4a"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-29T14:21:57.518Z"}

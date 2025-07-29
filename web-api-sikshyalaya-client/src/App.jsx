@@ -14,7 +14,7 @@ import PaypalPaymentReturnPage from "./pages/student/payment-return/paypal";
 import PaymentReturnPage from "./pages/student/payment-return";
 import StudentCoursesPage from "./pages/student/student-courses";
 import StudentViewCourseProgressPage from "./pages/student/course-progress";
-import QuizList from "./components/student-view/Quiz";
+import UpdateProfile from "./components/student-view/Quiz";
 import QuizPlay from "./components/student-view/Quiz-Play";
 import AdminQuizPanel from "./components/instructor-view/dashboard/admin-quiz-panel";
 function App() {
@@ -95,8 +95,7 @@ function App() {
         <Route path="payment-return" element={<PaymentReturnPage />} />
         <Route path="paypal-return" element={<PaypalPaymentReturnPage />} />
         <Route path="student-courses" element={<StudentCoursesPage />} />
-        <Route path="quiz" element={<QuizList />} />
-        <Route path="/quiz/:quizSetId" element={<QuizPlay />} />
+        <Route path="quiz" element={<UpdateProfile />} />
         <Route
           path="course-progress/:id"
           element={<StudentViewCourseProgressPage />}
