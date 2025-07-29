@@ -10,7 +10,7 @@ const authenticateMiddleware = require("../../middleware/auth-middleware");
 const router = express.Router();
 
 router.post("/register", loginLimiter, registerUser);
-router.post("/login",loginUser);
+router.post("/login", loginUser);
 router.get("/verify-email", verifyEmail);
 router.put("/update", authenticateMiddleware, updateUserDetails);
 router.get("/check-auth", authenticateMiddleware, (req, res) => {
@@ -20,7 +20,11 @@ router.get("/check-auth", authenticateMiddleware, (req, res) => {
     success: true,
     message: "Authenticated user!",
     data: {
-      user,
+      user: {
+        id: req.user.id,
+        email: req.user.email,
+        role: req.user.role
+      }
     },
   });
 });
