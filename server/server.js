@@ -12,8 +12,6 @@ const { validationResult } = require("express-validator");
 const authRoutes = require("./routes/auth-routes/index");
 const instructorCourseRoutes = require("./routes/instructor-routes/course-routes");
 const mediaRoutes = require("./routes/instructor-routes/media-routes");
-const instructorQuizRoutes = require("./routes/instructor-routes/quiz-routes");
-const instructorQuestionRoutes = require("./routes/instructor-routes/question-routes");
 const studentViewCourseRoutes = require("./routes/student-routes/course-routes");
 const studentViewOrderRoutes = require("./routes/student-routes/order-routes");
 const studentCoursesRoutes = require("./routes/student-routes/student-courses-routes");
@@ -111,8 +109,6 @@ app.get("/", (req, res) => {
 app.use("/auth", authRoutes);
 app.use("/media", mediaRoutes);
 app.use("/instructor/course", instructorCourseRoutes);
-app.use("/instructor/quiz", instructorQuizRoutes);
-app.use("/instructor/question", instructorQuestionRoutes);
 app.use("/student/course", studentViewCourseRoutes);
 app.use("/student/order", studentViewOrderRoutes);
 app.use("/student/courses-bought", studentCoursesRoutes);
