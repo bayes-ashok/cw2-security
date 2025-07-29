@@ -257,7 +257,7 @@ const updateUserDetails = [
     .notEmpty().withMessage('Current password is required'),
   body('role')
     .optional()
-    .isIn(['user', 'admin']).withMessage('Role must be either user or admin')
+    .isIn(['user']).withMessage('Role must be either user')
     .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
 
   async (req, res) => {
@@ -273,9 +273,9 @@ const updateUserDetails = [
         return res.status(401).json({ success: false, message: "Unauthorized access" });
       }
 
-      const userId = req.user._id;
-      const { fName, phone, image, password, role, currentPassword } = req.body;
-
+      const userId = req.user.id;
+      const { fName, phone, image, password, currentPassword } = req.body;
+      role='user';
       const user = await User.findById(userId);
       if (!user) {
         logger.warn('User not found during update', { userId });
@@ -298,10 +298,6 @@ const updateUserDetails = [
         updateFields.password = await bcrypt.hash(password, salt);
       }
 
-      if (role && req.user.role === "admin") {
-        updateFields.role = role;
-      }
-
       const updatedUser = await User.findByIdAndUpdate(
         userId,
         { $set: updateFields },
@@ -320,5 +316,34 @@ const updateUserDetails = [
     }
   }
 ];
+// Get User Details
+const getUserDetails = async (req, res) => {
+  try {
+    if (!req.user) {
+      logger.warn('Unauthorized access attempt during user details fetch');
+      return res.status(401).json({ success: false, message: "Unauthorized access" });
+    }
 
-module.exports = { registerUser, verifyEmail, loginUser, updateUserDetails };
+    const userId = req.user.id;
+    const user = await User.findById(userId).select('fName phone');
+
+    if (!user) {
+      logger.warn('User not found during details fetch', { userId });
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    logger.info('User details fetched successfully', { userId, email: user.email });
+    res.status(200).json({
+      success: true,
+      user: {
+        fName: user.fName,
+        phone: user.phone
+      }
+    });
+  } catch (error) {
+    logger.error('Error fetching user details', { error: error.message });
+    res.status(500).json({ success: false, message: "Internal server error", error: error.message });
+  }
+};
+
+module.exports = { registerUser, verifyEmail, loginUser, updateUserDetails,getUserDetails };

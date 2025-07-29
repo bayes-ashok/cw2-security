@@ -3,7 +3,8 @@ const {
   registerUser,
   loginUser,
   verifyEmail,
-  updateUserDetails
+  updateUserDetails,
+  getUserDetails
 } = require("../../controllers/auth-controller/index");
 const loginLimiter = require("../../middleware/rateLimit");
 const authenticateMiddleware = require("../../middleware/auth-middleware");
@@ -13,6 +14,7 @@ router.post("/register", loginLimiter, registerUser);
 router.post("/login", loginUser);
 router.get("/verify-email", verifyEmail);
 router.put("/update", authenticateMiddleware, updateUserDetails);
+router.get("/getDetails", authenticateMiddleware, getUserDetails);
 router.get("/check-auth", authenticateMiddleware, (req, res) => {
   const user = req.user;
 
