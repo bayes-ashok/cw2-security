@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 require("dotenv").config();
+const axios = require("axios");
+
 
 // Email transporter setup
 const transporter = nodemailer.createTransport({
@@ -17,9 +19,13 @@ const transporter = nodemailer.createTransport({
 // Register User with Email Verification
 const registerUser = async (req, res) => {
   try {
-    let { fName, email, password, role, phone, image } = req.body;
-
-    if (!role) role = "user";
+    let { fName, email, password, phone, image, captchaToken } = req.body;
+    const captchaVerifyURL = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${captchaToken}`;
+    const captchaRes = await axios.post(captchaVerifyURL);
+    if (!captchaRes.data.success) {
+      return res.status(400).json({ success: false, message: "Captcha verification failed" });
+    }
+    const role = "user";
 
     const existingUser = await User.findOne({ $or: [{ email }, { fName }] });
     if (existingUser) {
@@ -27,7 +33,7 @@ const registerUser = async (req, res) => {
         success: false,
         message: "User name or email already exists",
       });
-    
+
     }
 
     const hashPassword = await bcrypt.hash(password, 10);
@@ -88,22 +94,53 @@ const verifyEmail = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error", error });
   }
 };
-
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
-  console.log("email:",email)
-  console.log("pw:",password)
+  const LOCK_TIME = 5 * 60 * 1000; // 5 minutes in ms
+  const MAX_ATTEMPTS = 5;
 
   const checkUser = await User.findOne({ email });
 
-  if (!checkUser || !(await bcrypt.compare(password, checkUser.password))) {
+  // If user doesn't exist
+  if (!checkUser) {
+    return res.status(401).json({ success: false, message: "Invalid credentials" });
+  }
+
+  // Check if account is locked
+  if (checkUser.lockUntil && checkUser.lockUntil > Date.now()) {
+    const remaining = Math.ceil((checkUser.lockUntil - Date.now()) / 1000);
+    return res.status(403).json({
+      success: false,
+      message: `Account locked. Try again after ${remaining} seconds.`,
+    });
+  }
+
+  // Compare password
+  const isMatch = await bcrypt.compare(password, checkUser.password);
+  if (!isMatch) {
+    checkUser.loginAttempts += 1;
+
+    if (checkUser.loginAttempts >= MAX_ATTEMPTS) {
+      checkUser.lockUntil = Date.now() + LOCK_TIME;
+      await checkUser.save();
+      return res.status(403).json({
+        success: false,
+        message: "Too many failed attempts. Account locked for 5 minutes.",
+      });
+    }
+
+    await checkUser.save();
     return res.status(401).json({
       success: false,
       message: "Invalid credentials",
     });
   }
-  
-  // Check if the user is verified before issuing a token
+
+  // Reset attempts on successful login
+  checkUser.loginAttempts = 0;
+  checkUser.lockUntil = undefined;
+  await checkUser.save();
+
   if (!checkUser.verified) {
     return res.status(403).json({
       success: false,
@@ -140,6 +177,7 @@ const loginUser = async (req, res) => {
     },
   });
 };
+
 
 
 const updateUserDetails = async (req, res) => {

@@ -1,13 +1,11 @@
 import axiosInstance from "@/api/axiosInstance";
 
-export async function registerService(formData) {
-  const { data } = await axiosInstance.post("/auth/register", {
-    ...formData,
-    role: "user",
-  });
-
+export async function registerService(formData, captchaToken) {
+  const payload = { ...formData, captchaToken };
+  const { data } = await axiosInstance.post("/auth/register", payload);
   return data;
 }
+
 
 export async function loginService(formData) {
   const { data } = await axiosInstance.post("/auth/login", formData);
@@ -126,7 +124,7 @@ export async function captureAndFinalizePaymentService(
 
 export async function fetchStudentBoughtCoursesService(studentId) {
   const { data } = await axiosInstance.get(
-    `/student/courses-bought/get/${studentId}`
+    `/student/courses-bought/get/`
   );
 
   return data;

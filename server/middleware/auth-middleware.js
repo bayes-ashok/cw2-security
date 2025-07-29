@@ -20,8 +20,14 @@ const authenticate = (req, res, next) => {
   try {
     const payload = verifyToken(token, "JWT_SECRET");
 
-    req.user = payload;
-
+ req.user = {
+      id: payload._id,        // Always use req.user.id
+      fName: payload.fName,
+      email: payload.email,
+      role: payload.role,
+      phone: payload.phone,
+      image: payload.image
+    };
     next();
   } catch (e) {
     return res.status(401).json({

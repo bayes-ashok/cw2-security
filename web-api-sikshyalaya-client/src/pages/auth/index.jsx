@@ -3,13 +3,24 @@ import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "@/context/auth-context";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@/components/ui/card";
+import ReCAPTCHA from "react-google-recaptcha";
 import CommonForm from "@/components/common-form";
 import { signInFormControls, signUpFormControls } from "@/config";
 
 function AuthPage() {
   const [activeTab, setActiveTab] = useState("signin");
-  const [passwordStrength, setPasswordStrength] = useState({ score: 0, label: "", color: "" });
+  const [passwordStrength, setPasswordStrength] = useState({
+    score: 0,
+    label: "",
+    color: "",
+  });
   const [suggestedPassword, setSuggestedPassword] = useState("");
   const {
     signInFormData,
@@ -22,6 +33,7 @@ function AuthPage() {
 
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState(null);
 
   const checkPasswordStrength = (password) => {
     let score = 0;
@@ -47,7 +59,8 @@ function AuthPage() {
   };
 
   const generatePassword = () => {
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+    const chars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
     let password = "";
     for (let i = 0; i < 12; i++) {
       password += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -75,13 +88,13 @@ function AuthPage() {
       setPasswordStrength(checkPasswordStrength(signUpFormData.password));
     } else {
       setPasswordStrength({ score: 0, label: "", color: "" });
-      setSuggestedPassword(""); 
+      setSuggestedPassword("");
     }
   }, [signUpFormData.password, activeTab]);
 
   function handleTabChange(value) {
     setActiveTab(value);
-    setSuggestedPassword(""); 
+    setSuggestedPassword("");
   }
 
   function checkIfSignInFormIsValid() {
@@ -98,7 +111,8 @@ function AuthPage() {
       signUpFormData.fName !== "" &&
       signUpFormData.email !== "" &&
       signUpFormData.password !== "" &&
-      passwordStrength.score >= 3
+      passwordStrength.score >= 3 &&
+      captchaToken
     );
   }
 
@@ -158,7 +172,10 @@ function AuthPage() {
           <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden">
             <Menu className="w-7 h-7" />
           </button>
-          <Link to="/home" className="flex items-center hover:text-gray-200 transition-all">
+          <Link
+            to="/home"
+            className="flex items-center hover:text-gray-200 transition-all"
+          >
             <GraduationCap className="h-9 w-9 mr-3" />
             <span className="font-extrabold text-3xl">Sikshyalaya</span>
           </Link>
@@ -195,7 +212,9 @@ function AuthPage() {
             <TabsContent value="signin">
               <Card className="bg-white rounded-lg">
                 <CardHeader>
-                  <CardTitle className="text-gray-900 text-xl font-semibold">Sign in to your account</CardTitle>
+                  <CardTitle className="text-gray-900 text-xl font-semibold">
+                    Sign in to your account
+                  </CardTitle>
                   <CardDescription className="text-gray-600">
                     Enter your email and password to access your account
                   </CardDescription>
@@ -215,9 +234,13 @@ function AuthPage() {
             <TabsContent value="signup">
               <Card className="bg-white rounded-lg">
                 <CardHeader>
-                  <CardTitle className="text-gray-900 text-xl font-semibold">Create a new account</CardTitle>
+                  <CardTitle className="text-gray-900 text-xl font-semibold">
+                    Create a new account
+                  </CardTitle>
                   <CardDescription className="text-gray-600">
-                    Enter your details to get started. Use a strong password with at least 8 characters, including uppercase, lowercase, numbers, and special characters.
+                    Enter your details to get started. Use a strong password
+                    with at least 8 characters, including uppercase, lowercase,
+                    numbers, and special characters.
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -227,9 +250,13 @@ function AuthPage() {
                     formData={signUpFormData}
                     setFormData={setSignUpFormData}
                     isButtonDisabled={!checkIfSignUpFormIsValid()}
-                    handleSubmit={handleRegisterUser}
+                    handleSubmit={(e) => handleRegisterUser(e, captchaToken)}
                     customContent={passwordStrengthContent}
                     onPasswordFocus={handlePasswordFocus}
+                  />
+                  <ReCAPTCHA
+                    sitekey="6LdIKZMrAAAAAFcY_KH5cgOZV7IvLKvgVm9CE0d1"
+                    onChange={setCaptchaToken}
                   />
                 </CardContent>
               </Card>
