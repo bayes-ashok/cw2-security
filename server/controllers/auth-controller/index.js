@@ -9,6 +9,7 @@ require("dotenv").config();
 const axios = require("axios");
 const logger = require("../../middleware/logger");
 
+
 // Email transporter setup
 const transporter = nodemailer.createTransport({
   service: "Gmail",
@@ -51,6 +52,7 @@ const registerUser = [
 
     try {
       let { fName, email, password, phone, image, captchaToken } = req.body;
+      console.log("c: "+captchaToken)
       const captchaVerifyURL = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${captchaToken}`;
       const captchaRes = await axios.post(captchaVerifyURL);
       if (!captchaRes.data.success) {
@@ -237,7 +239,6 @@ const loginUser = [
     }
   }
 ];
-
 // Update User Details
 const updateUserDetails = [
   body('fName')
@@ -259,6 +260,9 @@ const updateUserDetails = [
     .optional()
     .isIn(['user']).withMessage('Role must be either user')
     .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  body('twoFactorEnabled')
+    .optional()
+    .isBoolean().withMessage('Two-factor enabled must be a boolean'),
 
   async (req, res) => {
     const errors = validationResult(req);
@@ -274,8 +278,8 @@ const updateUserDetails = [
       }
 
       const userId = req.user.id;
-      const { fName, phone, image, password, currentPassword } = req.body;
-      role='user';
+      const { fName, phone, image, password, currentPassword, twoFactorEnabled } = req.body;
+      const role = 'user';
       const user = await User.findById(userId);
       if (!user) {
         logger.warn('User not found during update', { userId });
@@ -292,10 +296,13 @@ const updateUserDetails = [
       if (fName) updateFields.fName = fName;
       if (phone) updateFields.phone = phone;
       if (image) updateFields.image = sanitizeHtml(image, { allowedTags: [], allowedAttributes: {} });
-
       if (password) {
         const salt = await bcrypt.genSalt(10);
         updateFields.password = await bcrypt.hash(password, salt);
+        updateFields.prevPasswords = [...user.prevPasswords, user.password].slice(-5);
+      }
+      if (twoFactorEnabled !== undefined) {
+        updateFields.twoFactorEnabled = twoFactorEnabled;
       }
 
       const updatedUser = await User.findByIdAndUpdate(
@@ -316,6 +323,7 @@ const updateUserDetails = [
     }
   }
 ];
+
 // Get User Details
 const getUserDetails = async (req, res) => {
   try {
@@ -325,7 +333,7 @@ const getUserDetails = async (req, res) => {
     }
 
     const userId = req.user.id;
-    const user = await User.findById(userId).select('fName phone');
+    const user = await User.findById(userId).select('fName phone twoFactorEnabled');
 
     if (!user) {
       logger.warn('User not found during details fetch', { userId });
@@ -337,7 +345,8 @@ const getUserDetails = async (req, res) => {
       success: true,
       user: {
         fName: user.fName,
-        phone: user.phone
+        phone: user.phone,
+        twoFactorEnabled: user.twoFactorEnabled
       }
     });
   } catch (error) {
@@ -345,5 +354,6 @@ const getUserDetails = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error", error: error.message });
   }
 };
+
 
 module.exports = { registerUser, verifyEmail, loginUser, updateUserDetails,getUserDetails };

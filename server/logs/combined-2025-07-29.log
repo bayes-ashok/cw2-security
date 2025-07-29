@@ -33,3 +33,45 @@
 {"level":"warn","message":"Incorrect current password during user update","timestamp":"2025-07-29T14:21:24.154Z","userId":"68877c6e3db24fb19ab58a4a"}
 {"level":"warn","message":"Incorrect current password during user update","timestamp":"2025-07-29T14:21:45.055Z","userId":"68877c6e3db24fb19ab58a4a"}
 {"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-29T14:21:57.518Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T14:24:30.827Z","userId":"68877c6e3db24fb19ab58a4a"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T14:24:37.017Z","userId":"68877c6e3db24fb19ab58a4a"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-29T14:24:38.305Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T14:24:39.248Z","userId":"68877c6e3db24fb19ab58a4a"}
+{"email":"ashoksubsc46@gmail.com","level":"warn","loginAttempts":1,"message":"Invalid login attempt - incorrect password","timestamp":"2025-07-29T16:49:03.627Z"}
+{"errors":[{"location":"body","msg":"Password must contain at least one uppercase letter, one lowercase letter, and one number","path":"password","type":"field","value":"ashok_4444"},{"location":"body","msg":"Captcha token is required","path":"captchaToken","type":"field"}],"level":"error","message":"Validation errors during user registration","timestamp":"2025-07-29T16:53:23.932Z"}
+{"errors":[{"location":"body","msg":"Captcha token is required","path":"captchaToken","type":"field"}],"level":"error","message":"Validation errors during user registration","timestamp":"2025-07-29T16:57:47.692Z"}
+{"errors":[{"location":"body","msg":"Captcha token is required","path":"captchaToken","type":"field"}],"level":"error","message":"Validation errors during user registration","timestamp":"2025-07-29T16:58:55.175Z"}
+{"errors":[{"location":"body","msg":"Captcha token is required","path":"captchaToken","type":"field"}],"level":"error","message":"Validation errors during user registration","timestamp":"2025-07-29T17:03:43.997Z"}
+{"errors":[{"location":"body","msg":"Captcha token is required","path":"captchaToken","type":"field"}],"level":"error","message":"Validation errors during user registration","timestamp":"2025-07-29T17:09:52.455Z"}
+{"errors":[{"location":"body","msg":"Password must be at least 6 characters long","path":"password","type":"field","value":"1"},{"location":"body","msg":"Password must contain at least one uppercase letter, one lowercase letter, and one number","path":"password","type":"field","value":"1"},{"location":"body","msg":"Captcha token is required","path":"captchaToken","type":"field"}],"level":"error","message":"Validation errors during user registration","timestamp":"2025-07-29T17:20:51.377Z"}
+{"errors":[{"location":"body","msg":"Captcha token is required","path":"captchaToken","type":"field"}],"level":"error","message":"Validation errors during user registration","timestamp":"2025-07-29T17:21:01.949Z"}
+{"errors":[{"location":"body","msg":"Captcha token is required","path":"captchaToken","type":"field"}],"level":"error","message":"Validation errors during user registration","timestamp":"2025-07-29T17:21:25.028Z"}
+{"errors":[{"location":"body","msg":"Captcha token is required","path":"captchaToken","type":"field"}],"level":"error","message":"Validation errors during user registration","timestamp":"2025-07-29T17:21:43.116Z"}
+{"email":"a1q1shgs11@gmail.com","level":"warn","message":"Captcha verification failed","timestamp":"2025-07-29T17:23:38.303Z"}
+{"email":"a1q1shgs11@gmail.com","level":"warn","message":"Captcha verification failed","timestamp":"2025-07-29T17:24:04.315Z"}
+{"email":"ashoksubsc46@gmail.com","level":"warn","message":"Captcha verification failed","timestamp":"2025-07-29T17:34:05.239Z"}
+{"email":"ashoksubsc46@gmail.com","fName":"pankaj","level":"info","message":"User registered successfully","timestamp":"2025-07-29T17:39:06.072Z"}
+{"error":"Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2405bca90ebsm31092655ad.6 - gsmtp","level":"error","message":"Error during user registration","timestamp":"2025-07-29T17:39:07.882Z"}
+{"email":"ashoksubsc46@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-29T17:42:34.487Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-29T17:42:34.553Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T17:42:38.328Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T17:46:19.227Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T17:46:26.214Z","userId":"6889073a0ea066777f94ce4b"}
+{"email":"ashoksubsc46@gmail.com","level":"info","message":"User details updated successfully","timestamp":"2025-07-29T17:47:02.375Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T17:47:06.464Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T17:49:58.812Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T17:54:23.804Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"warn","message":"Missing 2FA code or secret during 2FA enable","timestamp":"2025-07-29T17:54:41.389Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"warn","message":"Missing 2FA code or secret during 2FA enable","timestamp":"2025-07-29T17:54:47.612Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"warn","message":"Missing 2FA code or secret during 2FA enable","timestamp":"2025-07-29T17:55:29.143Z","userId":"6889073a0ea066777f94ce4b"}
+{"email":"ashoksubsc46@gmail.com","level":"info","message":"User details updated successfully","timestamp":"2025-07-29T17:57:39.260Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T17:57:51.202Z","userId":"6889073a0ea066777f94ce4b"}
+{"email":"ashoksubsc46@gmail.com","level":"info","message":"User details updated successfully","timestamp":"2025-07-29T17:58:07.145Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T17:58:11.394Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:04:15.842Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:06:45.828Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:06:49.014Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:06:58.372Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:07:07.460Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:09:55.004Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:13:50.938Z","userId":"6889073a0ea066777f94ce4b"}

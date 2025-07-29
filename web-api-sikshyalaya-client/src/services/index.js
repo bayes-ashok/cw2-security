@@ -2,6 +2,7 @@ import axiosInstance from "@/api/axiosInstance";
 
 export async function registerService(formData, captchaToken) {
   const payload = { ...formData, captchaToken };
+  console.log("Register payload:", payload); // Log the payload
   const { data } = await axiosInstance.post("/auth/register", payload);
   return data;
 }

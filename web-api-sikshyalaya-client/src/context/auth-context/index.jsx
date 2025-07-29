@@ -17,50 +17,66 @@ export default function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   // Register user and show a success/error toast
-async function handleRegisterUser(event, captchaToken) {
-  event.preventDefault();
+  async function handleRegisterUser(event, captchaToken) {
+    event.preventDefault();
 
-  try {
-    // ✅ Send captchaToken with signup data
-    const data = await registerService({ ...signUpFormData, captchaToken });
+    try {
+      // ✅ Send captchaToken with signup data
+      const data = await registerService(signUpFormData, captchaToken );
 
-    if (data.success) {
-      toast.success(data.message || "Signup successful! 🎉", { position: "top-right" });
-    } else {
-      toast.error(data.message || "Signup failed. Please try again.", { position: "top-right" });
+      if (data.success) {
+        toast.success(data.message || "Signup successful! 🎉", {
+          position: "top-right",
+        });
+      } else {
+        toast.error(data.message || "Signup failed. Please try again.", {
+          position: "top-right",
+        });
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Signup failed. Please try again.",
+        { position: "top-right" }
+      );
     }
-  } catch (error) {
-    toast.error(error?.response?.data?.message || "Signup failed. Please try again.", { position: "top-right" });
   }
-}
-async function handleLoginUser(event) {
-  event.preventDefault();
-  console.log(signInFormData);
-
-  try {
-    const data = await loginService(signInFormData); // ✅ no captcha now
+  async function handleLoginUser(event) {
+    event.preventDefault();
     console.log(signInFormData);
-  
-    if (data.success) {
-      sessionStorage.setItem("accessToken", JSON.stringify(data.data.accessToken));
-      setAuth({
-        authenticate: true,
-        user: data.data.user,
-      });
-      toast.success(data.message || "Login successful! 🎉", { position: "top-right" });
-    } else {
-      setAuth({
-        authenticate: false,
-        user: null,
-      });
-      toast.error(data.message || "Login failed. Please check your credentials.", { position: "top-right" });
-    }
-  } catch (error) {
-    toast.error(error?.response?.data?.message || "Login failed. Please try again.", { position: "top-right" });
-  }
-}
 
-  
+    try {
+      const data = await loginService(signInFormData); // ✅ no captcha now
+      console.log(signInFormData);
+
+      if (data.success) {
+        sessionStorage.setItem(
+          "accessToken",
+          JSON.stringify(data.data.accessToken)
+        );
+        setAuth({
+          authenticate: true,
+          user: data.data.user,
+        });
+        toast.success(data.message || "Login successful! 🎉", {
+          position: "top-right",
+        });
+      } else {
+        setAuth({
+          authenticate: false,
+          user: null,
+        });
+        toast.error(
+          data.message || "Login failed. Please check your credentials.",
+          { position: "top-right" }
+        );
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "Login failed. Please try again.",
+        { position: "top-right" }
+      );
+    }
+  }
 
   // Check user authentication
   async function checkAuthUser() {

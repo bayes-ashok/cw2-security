@@ -1,0 +1,27 @@
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:15:32.095Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"warn","message":"Unauthorized access attempt during QR code generation","timestamp":"2025-07-29T18:15:32.107Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:15:44.856Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"warn","message":"Unauthorized access attempt during QR code generation","timestamp":"2025-07-29T18:15:44.868Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:17:10.881Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"warn","message":"Unauthorized access attempt during QR code generation","timestamp":"2025-07-29T18:17:10.890Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:17:20.588Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"warn","message":"Unauthorized access attempt during QR code generation","timestamp":"2025-07-29T18:17:20.598Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:17:44.781Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"warn","message":"Unauthorized access attempt during QR code generation","timestamp":"2025-07-29T18:17:44.795Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:21:12.857Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:21:14.901Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:21:31.808Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:21:33.798Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:21:43.851Z","userId":"6889073a0ea066777f94ce4b"}
+{"email":"ashoksubsc46@gmail.com","level":"info","message":"User details updated successfully","timestamp":"2025-07-29T18:22:10.426Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:22:15.138Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"warn","message":"No courses found for student","studentId":"6889073a0ea066777f94ce4b","timestamp":"2025-07-29T18:22:58.505Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:22:59.392Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"warn","message":"No courses found for student","studentId":"6889073a0ea066777f94ce4b","timestamp":"2025-07-29T18:23:00.089Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:23:01.223Z","userId":"6889073a0ea066777f94ce4b"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-29T18:23:02.366Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-29T18:23:02.380Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:23:04.954Z","userId":"6889073a0ea066777f94ce4b"}
+{"level":"warn","message":"No courses found for student","studentId":"6889073a0ea066777f94ce4b","timestamp":"2025-07-29T18:23:05.651Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:23:06.372Z","userId":"6889073a0ea066777f94ce4b"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-29T18:23:07.611Z"}

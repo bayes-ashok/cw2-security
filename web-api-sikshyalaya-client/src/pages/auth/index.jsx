@@ -256,7 +256,14 @@ function AuthPage() {
                   />
                   <ReCAPTCHA
                     sitekey="6LdIKZMrAAAAAFcY_KH5cgOZV7IvLKvgVm9CE0d1"
-                    onChange={setCaptchaToken}
+                    onChange={(token) => {
+                      console.log("reCAPTCHA token:", token);
+                      setCaptchaToken(token);
+                    }}
+                    onExpired={() => {
+                      console.log("reCAPTCHA token expired");
+                      setCaptchaToken(null);
+                    }}
                   />
                 </CardContent>
               </Card>

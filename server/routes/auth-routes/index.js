@@ -10,7 +10,7 @@ const loginLimiter = require("../../middleware/rateLimit");
 const authenticateMiddleware = require("../../middleware/auth-middleware");
 const router = express.Router();
 
-router.post("/register", loginLimiter, registerUser);
+router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/verify-email", verifyEmail);
 router.put("/update", authenticateMiddleware, updateUserDetails);

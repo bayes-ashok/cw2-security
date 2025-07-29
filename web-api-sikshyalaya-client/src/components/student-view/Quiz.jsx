@@ -7,7 +7,8 @@ const UpdateProfile = () => {
     fName: '',
     phone: '',
     password: '',
-    currentPassword: ''
+    currentPassword: '',
+    twoFactorEnabled: false,
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -27,7 +28,8 @@ const UpdateProfile = () => {
           fName: response.data.user.fName || '',
           phone: response.data.user.phone || '',
           password: '',
-          currentPassword: ''
+          currentPassword: '',
+          twoFactorEnabled: response.data.user.twoFactorEnabled || false,
         });
       } catch (error) {
         toast.error('Failed to load user data');
@@ -37,8 +39,8 @@ const UpdateProfile = () => {
   }, []);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -78,6 +80,7 @@ const UpdateProfile = () => {
       if (formData.phone) payload.phone = formData.phone;
       if (formData.password) payload.password = formData.password;
       payload.currentPassword = formData.currentPassword;
+      payload.twoFactorEnabled = formData.twoFactorEnabled;
 
       const response = await axios.put('/auth/update', payload, axiosConfig);
       
@@ -85,7 +88,7 @@ const UpdateProfile = () => {
       setFormData(prev => ({
         ...prev,
         password: '',
-        currentPassword: ''
+        currentPassword: '',
       }));
     } catch (error) {
       const errorMessage = error.response?.data?.message || 'Failed to update profile';
@@ -102,70 +105,93 @@ const UpdateProfile = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-xl">
-      <Toaster position="top-center" />
-      <h2 className="text-2xl font-bold mb-6 text-center">Update Profile</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">First Name</label>
-          <input
-            type="text"
-            name="fName"
-            value={formData.fName}
-            onChange={handleChange}
-            className="mt-1 p-2 w-full border rounded-md focus:ring focus:ring-blue-300"
-            placeholder="Enter first name"
-          />
-          {errors.fName && <p className="text-red-500 text-sm mt-1">{errors.fName}</p>}
-        </div>
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
+      <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
+        <Toaster position="top-center" />
+        <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">Update Profile</h2>
+        <div className="flex flex-col gap-6">
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
+            <input
+              type="text"
+              name="fName"
+              value={formData.fName}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+              placeholder="Enter first name"
+            />
+            {errors.fName && <p className="text-red-500 text-sm mt-1">{errors.fName}</p>}
+          </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Phone Number</label>
-          <input
-            type="tel"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            className="mt-1 p-2 w-full border rounded-md focus:ring focus:ring-blue-300"
-            placeholder="Enter phone number"
-          />
-          {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
-        </div>
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+              placeholder="Enter phone number"
+            />
+            {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+          </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">New Password</label>
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            className="mt-1 p-2 w-full border rounded-md focus:ring focus:ring-blue-300"
-            placeholder="Enter new password"
-          />
-          {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
-        </div>
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+            <input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+              placeholder="Enter new password"
+            />
+            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+          </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Current Password</label>
-          <input
-            type="password"
-            name="currentPassword"
-            value={formData.currentPassword}
-            onChange={handleChange}
-            className="mt-1 p-2 w-full border rounded-md focus:ring focus:ring-blue-300"
-            placeholder="Enter current password"
-          />
-          {errors.currentPassword && <p className="text-red-500 text-sm mt-1">{errors.currentPassword}</p>}
-        </div>
+          <div className="mb-6">
+            <label className="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
+            <input
+              type="password"
+              name="currentPassword"
+              value={formData.currentPassword}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+              placeholder="Enter current password"
+            />
+            {errors.currentPassword && <p className="text-red-500 text-sm mt-1">{errors.currentPassword}</p>}
+          </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className={`w-full p-2 rounded-md text-white ${loading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'}`}
-        >
-          {loading ? 'Updating...' : 'Update Profile'}
-        </button>
-      </form>
+          <div className="mb-6">
+            <label className="flex items-center text-sm font-medium text-gray-700">
+              <input
+                type="checkbox"
+                name="twoFactorEnabled"
+                checked={formData.twoFactorEnabled}
+                onChange={handleChange}
+                className="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              Enable Two-Factor Authentication (OTP via Email)
+            </label>
+            {formData.twoFactorEnabled && (
+              <p className="text-sm text-gray-600 mt-2">
+                When enabled, an OTP will be sent to your email during login for added security.
+              </p>
+            )}
+          </div>
+
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={loading}
+            className={`w-full p-3 rounded-lg text-white font-medium transition duration-200 ${
+              loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+            }`}
+          >
+            {loading ? 'Updating...' : 'Update Profile'}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
