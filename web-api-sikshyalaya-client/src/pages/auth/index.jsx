@@ -114,6 +114,7 @@ function AuthPage() {
       signUpFormData &&
       signUpFormData.fName !== "" &&
       signUpFormData.email !== "" &&
+      signUpFormData.phone !== "" &&
       signUpFormData.password !== "" &&
       passwordStrength.score >= 3 &&
       captchaToken
@@ -137,6 +138,9 @@ function AuthPage() {
   const enhancedSignUpFormControls = signUpFormControls.map((control) => {
     if (control.name === "email") {
       return { ...control, autocomplete: "email" };
+    }
+    if (control.name === "phone") {
+      return { ...control, autocomplete: "tel" };
     }
     if (control.name === "password") {
       return { ...control, autocomplete: "new-password" };

@@ -14,6 +14,13 @@ export const signUpFormControls = [
     componentType: "input",
   },
   {
+    name: "phone", // New phone field
+    label: "Phone Number",
+    type: "tel",
+    placeholder: "Enter your phone number",
+    componentType: "input",
+  },
+  {
     name: "password",
     label: "Password",
     placeholder: "Enter your password",

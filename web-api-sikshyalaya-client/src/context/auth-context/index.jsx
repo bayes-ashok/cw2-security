@@ -30,6 +30,8 @@ export default function AuthProvider({ children }) {
         toast.success(data.message || "Signup successful! 🎉", {
           position: "top-right",
         });
+        // Reset signup form data after success
+        setSignUpFormData(initialSignUpFormData);
       } else {
         toast.error(data.message || "Signup failed. Please try again.", {
           position: "top-right",
@@ -69,6 +71,8 @@ export default function AuthProvider({ children }) {
           toast.success(data.message || "Login successful! 🎉", {
             position: "top-right",
           });
+          // Reset signin form data after successful login
+          setSignInFormData(initialSignInFormData);
         }
       } else {
         setAuth({
@@ -104,7 +108,7 @@ export default function AuthProvider({ children }) {
           user: data.data.user,
         });
         setOtpRequired(false);
-        setOtpFormData({ otp: "" });
+        setOtpFormData({ otp: "" }); // Already resets OTP form
         setUserId(null);
         toast.success(data.message || "OTP verified! Login successful! 🎉", {
           position: "top-right",
@@ -160,6 +164,8 @@ export default function AuthProvider({ children }) {
     setOtpRequired(false);
     setOtpFormData({ otp: "" });
     setUserId(null);
+    setSignInFormData(initialSignInFormData);
+    setSignUpFormData(initialSignUpFormData);
   }
 
   useEffect(() => {
