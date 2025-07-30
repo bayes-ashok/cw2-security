@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { initialSignInFormData, initialSignUpFormData } from "@/config";
-import { checkAuthService, loginService, registerService } from "@/services";
+import { checkAuthService, loginService, registerService, verifyOtpService } from "@/services";
 import { createContext, useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; // Import the toast styles
@@ -15,14 +15,16 @@ export default function AuthProvider({ children }) {
     user: null,
   });
   const [loading, setLoading] = useState(true);
+  const [otpRequired, setOtpRequired] = useState(false);
+  const [otpFormData, setOtpFormData] = useState({ otp: "" });
+  const [userId, setUserId] = useState(null);
 
   // Register user and show a success/error toast
   async function handleRegisterUser(event, captchaToken) {
     event.preventDefault();
 
     try {
-      // ✅ Send captchaToken with signup data
-      const data = await registerService(signUpFormData, captchaToken );
+      const data = await registerService(signUpFormData, captchaToken);
 
       if (data.success) {
         toast.success(data.message || "Signup successful! 🎉", {
@@ -40,26 +42,34 @@ export default function AuthProvider({ children }) {
       );
     }
   }
+
+  // Login user and handle OTP if required
   async function handleLoginUser(event) {
     event.preventDefault();
-    console.log(signInFormData);
 
     try {
-      const data = await loginService(signInFormData); // ✅ no captcha now
-      console.log(signInFormData);
+      const data = await loginService(signInFormData);
 
       if (data.success) {
-        sessionStorage.setItem(
-          "accessToken",
-          JSON.stringify(data.data.accessToken)
-        );
-        setAuth({
-          authenticate: true,
-          user: data.data.user,
-        });
-        toast.success(data.message || "Login successful! 🎉", {
-          position: "top-right",
-        });
+        if (data.data.requiresOtp) {
+          setOtpRequired(true);
+          setUserId(data.data.userId);
+          toast.info(data.message || "Please enter the OTP sent to your email.", {
+            position: "top-right",
+          });
+        } else {
+          sessionStorage.setItem(
+            "accessToken",
+            JSON.stringify(data.data.accessToken)
+          );
+          setAuth({
+            authenticate: true,
+            user: data.data.user,
+          });
+          toast.success(data.message || "Login successful! 🎉", {
+            position: "top-right",
+          });
+        }
       } else {
         setAuth({
           authenticate: false,
@@ -73,6 +83,40 @@ export default function AuthProvider({ children }) {
     } catch (error) {
       toast.error(
         error?.response?.data?.message || "Login failed. Please try again.",
+        { position: "top-right" }
+      );
+    }
+  }
+
+  // Verify OTP
+  async function handleVerifyOtp(event) {
+    event.preventDefault();
+
+    try {
+      const data = await verifyOtpService({ userId, otp: otpFormData.otp });
+      if (data.success) {
+        sessionStorage.setItem(
+          "accessToken",
+          JSON.stringify(data.data.accessToken)
+        );
+        setAuth({
+          authenticate: true,
+          user: data.data.user,
+        });
+        setOtpRequired(false);
+        setOtpFormData({ otp: "" });
+        setUserId(null);
+        toast.success(data.message || "OTP verified! Login successful! 🎉", {
+          position: "top-right",
+        });
+      } else {
+        toast.error(data.message || "Invalid OTP. Please try again.", {
+          position: "top-right",
+        });
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message || "OTP verification failed. Please try again.",
         { position: "top-right" }
       );
     }
@@ -113,13 +157,14 @@ export default function AuthProvider({ children }) {
       authenticate: false,
       user: null,
     });
+    setOtpRequired(false);
+    setOtpFormData({ otp: "" });
+    setUserId(null);
   }
 
   useEffect(() => {
     checkAuthUser();
   }, []);
-
-  console.log(auth, "gf");
 
   return (
     <AuthContext.Provider
@@ -130,12 +175,16 @@ export default function AuthProvider({ children }) {
         setSignUpFormData,
         handleRegisterUser,
         handleLoginUser,
+        handleVerifyOtp,
         auth,
         resetCredentials,
+        otpRequired,
+        otpFormData,
+        setOtpFormData,
       }}
     >
       {loading ? <Skeleton /> : children}
-      <ToastContainer /> {/* Add ToastContainer to render the toasts */}
+      <ToastContainer />
     </AuthContext.Provider>
   );
 }

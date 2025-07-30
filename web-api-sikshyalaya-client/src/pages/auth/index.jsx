@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import ReCAPTCHA from "react-google-recaptcha";
 import CommonForm from "@/components/common-form";
-import { signInFormControls, signUpFormControls } from "@/config";
+import { signInFormControls, signUpFormControls, otpFormControls } from "@/config";
 
 function AuthPage() {
   const [activeTab, setActiveTab] = useState("signin");
@@ -29,6 +29,10 @@ function AuthPage() {
     setSignUpFormData,
     handleRegisterUser,
     handleLoginUser,
+    handleVerifyOtp,
+    otpRequired,
+    otpFormData,
+    setOtpFormData,
   } = useContext(AuthContext);
 
   const navigate = useNavigate();
@@ -116,6 +120,10 @@ function AuthPage() {
     );
   }
 
+  function checkIfOtpFormIsValid() {
+    return otpFormData && otpFormData.otp !== "" && otpFormData.otp.length === 6;
+  }
+
   const enhancedSignInFormControls = signInFormControls.map((control) => {
     if (control.name === "email") {
       return { ...control, autocomplete: "email" };
@@ -189,86 +197,109 @@ function AuthPage() {
 
       <div className="flex items-center justify-center mt-3">
         <div className="w-full max-w-lg bg-gray-50 p-3 rounded-2xl shadow-lg border border-gray-200">
-          <Tabs
-            value={activeTab}
-            defaultValue="signin"
-            onValueChange={handleTabChange}
-            className="w-full"
-          >
-            <TabsList className="grid w-full grid-cols-2 bg-gray-100 rounded-lg">
-              <TabsTrigger
-                value="signin"
-                className="rounded-md text-gray-700 hover:bg-gray-200"
-              >
-                Sign In
-              </TabsTrigger>
-              <TabsTrigger
-                value="signup"
-                className="rounded-md text-gray-700 hover:bg-gray-200"
-              >
-                Sign Up
-              </TabsTrigger>
-            </TabsList>
-            <TabsContent value="signin">
-              <Card className="bg-white rounded-lg">
-                <CardHeader>
-                  <CardTitle className="text-gray-900 text-xl font-semibold">
-                    Sign in to your account
-                  </CardTitle>
-                  <CardDescription className="text-gray-600">
-                    Enter your email and password to access your account
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <CommonForm
-                    formControls={enhancedSignInFormControls}
-                    buttonText={"Login"}
-                    formData={signInFormData}
-                    setFormData={setSignInFormData}
-                    isButtonDisabled={!checkIfSignInFormIsValid()}
-                    handleSubmit={handleLoginUser}
-                  />
-                </CardContent>
-              </Card>
-            </TabsContent>
-            <TabsContent value="signup">
-              <Card className="bg-white rounded-lg">
-                <CardHeader>
-                  <CardTitle className="text-gray-900 text-xl font-semibold">
-                    Create a new account
-                  </CardTitle>
-                  <CardDescription className="text-gray-600">
-                    Enter your details to get started. Use a strong password
-                    with at least 8 characters, including uppercase, lowercase,
-                    numbers, and special characters.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <CommonForm
-                    formControls={enhancedSignUpFormControls}
-                    buttonText={"Sign Up"}
-                    formData={signUpFormData}
-                    setFormData={setSignUpFormData}
-                    isButtonDisabled={!checkIfSignUpFormIsValid()}
-                    handleSubmit={(e) => handleRegisterUser(e, captchaToken)}
-                    customContent={passwordStrengthContent}
-                    onPasswordFocus={handlePasswordFocus}
-                  />
-                  <ReCAPTCHA
-                    sitekey="6LdIKZMrAAAAAFcY_KH5cgOZV7IvLKvgVm9CE0d1"
-                    onChange={(token) => {
-                      console.log("reCAPTCHA token:", token);
-                      setCaptchaToken(token);
-                    }}
-                    onExpired={() => {
-                      console.log("reCAPTCHA token expired");
-                      setCaptchaToken(null);
-                    }}
-                  />
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+          {otpRequired ? (
+            <Card className="bg-white rounded-lg">
+              <CardHeader>
+                <CardTitle className="text-gray-900 text-xl font-semibold">
+                  Verify OTP
+                </CardTitle>
+                <CardDescription className="text-gray-600">
+                  Enter the 6-digit OTP sent to your email to complete login.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <CommonForm
+                  formControls={otpFormControls}
+                  buttonText={"Verify OTP"}
+                  formData={otpFormData}
+                  setFormData={setOtpFormData}
+                  isButtonDisabled={!checkIfOtpFormIsValid()}
+                  handleSubmit={handleVerifyOtp}
+                />
+              </CardContent>
+            </Card>
+          ) : (
+            <Tabs
+              value={activeTab}
+              defaultValue="signin"
+              onValueChange={handleTabChange}
+              className="w-full"
+            >
+              <TabsList className="grid w-full grid-cols-2 bg-gray-100 rounded-lg">
+                <TabsTrigger
+                  value="signin"
+                  className="rounded-md text-gray-700 hover:bg-gray-200"
+                >
+                  Sign In
+                </TabsTrigger>
+                <TabsTrigger
+                  value="signup"
+                  className="rounded-md text-gray-700 hover:bg-gray-200"
+                >
+                  Sign Up
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="signin">
+                <Card className="bg-white rounded-lg">
+                  <CardHeader>
+                    <CardTitle className="text-gray-900 text-xl font-semibold">
+                      Sign in to your account
+                    </CardTitle>
+                    <CardDescription className="text-gray-600">
+                      Enter your email and password to access your account
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <CommonForm
+                      formControls={enhancedSignInFormControls}
+                      buttonText={"Login"}
+                      formData={signInFormData}
+                      setFormData={setSignInFormData}
+                      isButtonDisabled={!checkIfSignInFormIsValid()}
+                      handleSubmit={handleLoginUser}
+                    />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+              <TabsContent value="signup">
+                <Card className="bg-white rounded-lg">
+                  <CardHeader>
+                    <CardTitle className="text-gray-900 text-xl font-semibold">
+                      Create a new account
+                    </CardTitle>
+                    <CardDescription className="text-gray-600">
+                      Enter your details to get started. Use a strong password
+                      with at least 8 characters, including uppercase, lowercase,
+                      numbers, and special characters.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <CommonForm
+                      formControls={enhancedSignUpFormControls}
+                      buttonText={"Sign Up"}
+                      formData={signUpFormData}
+                      setFormData={setSignUpFormData}
+                      isButtonDisabled={!checkIfSignUpFormIsValid()}
+                      handleSubmit={(e) => handleRegisterUser(e, captchaToken)}
+                      customContent={passwordStrengthContent}
+                      onPasswordFocus={handlePasswordFocus}
+                    />
+                    <ReCAPTCHA
+                      sitekey="6LdIKZMrAAAAAFcY_KH5cgOZV7IvLKvgVm9CE0d1"
+                      onChange={(token) => {
+                        console.log("reCAPTCHA token:", token);
+                        setCaptchaToken(token);
+                      }}
+                      onExpired={() => {
+                        console.log("reCAPTCHA token expired");
+                        setCaptchaToken(null);
+                      }}
+                    />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          )}
         </div>
       </div>
     </div>

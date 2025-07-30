@@ -39,6 +39,16 @@ export const signInFormControls = [
   },
 ];
 
+export const otpFormControls = [
+  {
+    name: "otp",
+    label: "One-Time Password",
+    placeholder: "Enter the 6-digit OTP",
+    type: "text",
+    componentType: "input",
+  },
+];
+
 export const initialSignInFormData = {
   email: "",
   password: "",
