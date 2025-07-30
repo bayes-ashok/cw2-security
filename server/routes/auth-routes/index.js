@@ -4,7 +4,8 @@ const {
   loginUser,
   verifyEmail,
   updateUserDetails,
-  getUserDetails
+  getUserDetails,
+  verifyOTP
 } = require("../../controllers/auth-controller/index");
 const loginLimiter = require("../../middleware/rateLimit");
 const authenticateMiddleware = require("../../middleware/auth-middleware");
@@ -12,6 +13,7 @@ const router = express.Router();
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
+router.post("/verify-otp", verifyOTP);
 router.get("/verify-email", verifyEmail);
 router.put("/update", authenticateMiddleware, updateUserDetails);
 router.get("/getDetails", authenticateMiddleware, getUserDetails);

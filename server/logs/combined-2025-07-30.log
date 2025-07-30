@@ -25,3 +25,9 @@
 {"level":"warn","message":"No courses found for student","studentId":"6889073a0ea066777f94ce4b","timestamp":"2025-07-29T18:23:05.651Z"}
 {"level":"info","message":"User details fetched successfully","timestamp":"2025-07-29T18:23:06.372Z","userId":"6889073a0ea066777f94ce4b"}
 {"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-29T18:23:07.611Z"}
+{"email":"ashoksubsc46@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-30T04:23:02.929Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T04:23:03.086Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-30T04:23:07.295Z","userId":"6889073a0ea066777f94ce4b"}
+{"error":"Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2405befcbe8sm38684985ad.76 - gsmtp","level":"error","message":"Error during login","timestamp":"2025-07-30T04:35:04.331Z"}
+{"error":"Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-24007d98b25sm69657105ad.97 - gsmtp","level":"error","message":"Error during login","timestamp":"2025-07-30T04:45:19.843Z"}
+{"error":"Invalid login: 535-5.7.8 Username and Password not accepted. For more information, go to\n535 5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-23ff6e1fe3fsm73610995ad.170 - gsmtp","level":"error","message":"Error during login","timestamp":"2025-07-30T04:47:12.327Z"}

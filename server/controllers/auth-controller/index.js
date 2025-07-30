@@ -9,6 +9,9 @@ require("dotenv").config();
 const axios = require("axios");
 const logger = require("../../middleware/logger");
 
+// Log environment variables for debugging
+console.log("Email User:", process.env.EMAIL_USER);
+console.log("Email Pass:", process.env.EMAIL_PASS ? "Set" : "Not Set");
 
 // Email transporter setup
 const transporter = nodemailer.createTransport({
@@ -18,6 +21,11 @@ const transporter = nodemailer.createTransport({
     pass: process.env.EMAIL_PASS,
   },
 });
+
+// Generate a 6-digit OTP
+const generateOTP = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
 
 // Register User with Email Verification
 const registerUser = [
@@ -52,7 +60,6 @@ const registerUser = [
 
     try {
       let { fName, email, password, phone, image, captchaToken } = req.body;
-      console.log("c: "+captchaToken)
       const captchaVerifyURL = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${captchaToken}`;
       const captchaRes = await axios.post(captchaVerifyURL);
       if (!captchaRes.data.success) {
@@ -100,8 +107,17 @@ const registerUser = [
         ),
       };
 
-      await transporter.sendMail(mailOptions);
-      logger.info('Verification email sent', { email });
+      try {
+        await transporter.sendMail(mailOptions);
+        logger.info('Verification email sent', { email });
+      } catch (emailError) {
+        logger.error('Failed to send verification email', { email, error: emailError.message });
+        return res.status(500).json({
+          success: false,
+          message: "User registered, but failed to send verification email. Please try again later.",
+          error: emailError.message,
+        });
+      }
 
       res.status(201).json({
         success: true,
@@ -204,6 +220,44 @@ const loginUser = [
         });
       }
 
+      if (checkUser.twoFactorEnabled) {
+        // Generate and store OTP
+        const otp = generateOTP();
+        const otpExpires = Date.now() + 5 * 60 * 1000; // 5 minutes expiration
+        checkUser.otp = otp;
+        checkUser.otpExpires = otpExpires;
+        await checkUser.save();
+
+        // Send OTP email
+        const mailOptions = {
+          from: process.env.EMAIL_USER,
+          to: email,
+          subject: "Your OTP for Login",
+          html: sanitizeHtml(
+            `<p>Your one-time password (OTP) is <strong>${otp}</strong>. It expires in 5 minutes.</p>`,
+            { allowedTags: ['p', 'strong'], allowedAttributes: {} }
+          ),
+        };
+
+        try {
+          await transporter.sendMail(mailOptions);
+          logger.info('OTP sent to user', { email });
+        } catch (emailError) {
+          logger.error('Failed to send OTP email', { email, error: emailError.message });
+          return res.status(500).json({
+            success: false,
+            message: "Failed to send OTP email. Please try again later.",
+            error: emailError.message,
+          });
+        }
+
+        return res.status(200).json({
+          success: true,
+          message: "OTP sent to your email. Please verify to complete login.",
+          data: { userId: checkUser._id, requiresOtp: true },
+        });
+      }
+
       const accessToken = jwt.sign(
         {
           _id: checkUser._id,
@@ -239,6 +293,83 @@ const loginUser = [
     }
   }
 ];
+
+// Verify OTP
+const verifyOTP = [
+  body('userId')
+    .notEmpty().withMessage('User ID is required'),
+  body('otp')
+    .notEmpty().withMessage('OTP is required')
+    .isNumeric().withMessage('OTP must be numeric')
+    .isLength({ min: 6, max: 6 }).withMessage('OTP must be 6 digits'),
+
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      logger.error('Validation errors during OTP verification', { errors: errors.array() });
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
+
+    const { userId, otp } = req.body;
+
+    try {
+      const user = await User.findById(userId);
+      if (!user) {
+        logger.warn('User not found during OTP verification', { userId });
+        return res.status(404).json({ success: false, message: "User not found" });
+      }
+
+      if (!user.otp || !user.otpExpires || user.otpExpires < Date.now()) {
+        logger.warn('Invalid or expired OTP', { userId });
+        return res.status(400).json({ success: false, message: "Invalid or expired OTP" });
+      }
+
+      if (user.otp !== otp) {
+        logger.warn('Incorrect OTP provided', { userId });
+        return res.status(400).json({ success: false, message: "Incorrect OTP" });
+      }
+
+      // Clear OTP fields
+      user.otp = undefined;
+      user.otpExpires = undefined;
+      await user.save();
+
+      const accessToken = jwt.sign(
+        {
+          _id: user._id,
+          fName: user.fName,
+          email: user.email,
+          role: user.role,
+          phone: user.phone,
+          image: user.image,
+        },
+        "JWT_SECRET",
+        { expiresIn: "120m" }
+      );
+
+      logger.info('OTP verified and user logged in successfully', { email: user.email });
+      res.status(200).json({
+        success: true,
+        message: "OTP verified successfully. Logged in successfully.",
+        data: {
+          accessToken,
+          user: {
+            _id: user._id,
+            fName: user.fName,
+            email: user.email,
+            role: user.role,
+            phone: user.phone,
+            image: user.image,
+          },
+        },
+      });
+    } catch (error) {
+      logger.error('Error during OTP verification', { error: error.message });
+      res.status(500).json({ success: false, message: "Internal server error", error: error.message });
+    }
+  }
+];
+
 // Update User Details
 const updateUserDetails = [
   body('fName')
@@ -355,5 +486,4 @@ const getUserDetails = async (req, res) => {
   }
 };
 
-
-module.exports = { registerUser, verifyEmail, loginUser, updateUserDetails,getUserDetails };
+module.exports = { registerUser, verifyEmail, loginUser, verifyOTP, updateUserDetails, getUserDetails };

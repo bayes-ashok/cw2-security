@@ -10,14 +10,12 @@ const UserSchema = new mongoose.Schema({
   image: { type: String },
   verified: { type: Boolean, default: false },
   verificationToken: { type: String },
-
   // Security enhancements
   loginAttempts: { type: Number, default: 0 }, // Track failed logins
   lockUntil: { type: Date }, // Lock account timestamp
   twoFactorEnabled: { type: Boolean, default: false }, // Enable 2FA
-  twoFactorSecret: { type: String }, // Store TOTP secret
+  otp: { type: String }, // Store OTP
+  otpExpires: { type: Date }, // OTP expiration time
 }, { timestamps: true });
-
-
 
 module.exports = mongoose.model("User", UserSchema);
