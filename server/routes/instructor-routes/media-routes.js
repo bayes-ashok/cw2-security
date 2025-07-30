@@ -4,12 +4,13 @@ const {
   uploadMediaToCloudinary,
   deleteMediaFromCloudinary,
 } = require("../../helpers/cloudinary");
+const authenticateAdmin = require("../../middleware/admin-auth-middleware");
 
 const router = express.Router();
 
 const upload = multer({ dest: "uploads/" });
 
-router.post("/upload", upload.single("file"), async (req, res) => {
+router.post("/upload", authenticateAdmin, upload.single("file"), async (req, res) => {
   try {
     const result = await uploadMediaToCloudinary(req.file.path);
     res.status(200).json({
@@ -23,7 +24,7 @@ router.post("/upload", upload.single("file"), async (req, res) => {
   }
 });
 
-router.delete("/delete/:id", async (req, res) => {
+router.delete("/delete/:id",authenticateAdmin, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -47,7 +48,7 @@ router.delete("/delete/:id", async (req, res) => {
   }
 });
 
-router.post("/bulk-upload", upload.array("files", 10), async (req, res) => {
+router.post("/bulk-upload", authenticateAdmin, upload.array("files", 10), async (req, res) => {
   try {
     const uploadPromises = req.files.map((fileItem) =>
       uploadMediaToCloudinary(fileItem.path)
