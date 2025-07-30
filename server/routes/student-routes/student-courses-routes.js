@@ -8,6 +8,6 @@ const authenticateMiddleware = require("../../middleware/auth-middleware");
 const router = express.Router();
 
 router.get("/get/", authenticateMiddleware, getCoursesByStudentId);
-router.post("/enroll", enrollStudentInCourse);
+router.post("/enroll", authenticateMiddleware, enrollStudentInCourse);
 
 module.exports = router;
