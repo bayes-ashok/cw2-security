@@ -14,15 +14,6 @@ const createOrder = [
     .notEmpty().withMessage('User ID is required')
     .isMongoId().withMessage('Invalid user ID')
     .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
-  body('fName')
-    .trim()
-    .notEmpty().withMessage('First name is required')
-    .isLength({ min: 2 }).withMessage('First name must be at least 2 characters long')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
-  body('email')
-    .isEmail().withMessage('Please provide a valid email address')
-    .normalizeEmail()
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
   body('orderStatus')
     .notEmpty().withMessage('Order status is required')
     .isIn(['pending', 'confirmed']).withMessage('Invalid order status')
@@ -33,7 +24,7 @@ const createOrder = [
     .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
   body('paymentStatus')
     .notEmpty().withMessage('Payment status is required')
-    .isIn(['pending', 'paid']).withMessage('Invalid payment status')
+    .isIn(['pending', 'initiated', 'paid']).withMessage('Invalid payment status')
     .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
   body('orderDate')
     .notEmpty().withMessage('Order date is required')
@@ -80,8 +71,6 @@ const createOrder = [
     try {
       const {
         userId,
-        fName,
-        email,
         orderStatus,
         paymentMethod,
         paymentStatus,
@@ -96,14 +85,35 @@ const createOrder = [
         coursePricing,
       } = req.body;
 
+      // Fetch user data
+      const user = await User.findById(userId).select('fName email phone');
+      if (!user) {
+        logger.warn('User not found during PayPal order creation', { userId });
+        return res.status(404).json({
+          success: false,
+          message: 'User not found',
+        });
+      }
+      if (!user.fName || !user.email) {
+        logger.warn('Missing required user fields', { userId, fName: user.fName, email: user.email });
+        return res.status(400).json({
+          success: false,
+          message: 'User missing required fields: first name or email',
+        });
+      }
+
+      const fName = user.fName;
+      const email = user.email;
+      const phone = user.phone || '9800000001'; // Fallback phone number if not present
+
       const create_payment_json = {
         intent: "sale",
         payer: {
           payment_method: "paypal",
         },
         redirect_urls: {
-          return_url: "http://localhost:5173/paypal-return",
-          cancel_url: "http://localhost:5173/payment-cancel",
+          return_url: "https://localhost:5173/paypal-return",
+          cancel_url: "https://localhost:5173/payment-cancel",
         },
         transactions: [
           {
@@ -140,6 +150,7 @@ const createOrder = [
           userId,
           fName,
           email,
+          phone,
           orderStatus,
           paymentMethod,
           paymentStatus,
@@ -286,19 +297,6 @@ const createKhaltiOrder = [
     .notEmpty().withMessage('User ID is required')
     .isMongoId().withMessage('Invalid user ID')
     .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
-  body('fName')
-    .trim()
-    .notEmpty().withMessage('First name is required')
-    .isLength({ min: 2 }).withMessage('First name must be at least 2 characters long')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
-  body('email')
-    .isEmail().withMessage('Please provide a valid email address')
-    .normalizeEmail()
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
-  body('phone')
-    .notEmpty().withMessage('Phone number is required')
-    .isMobilePhone().withMessage('Invalid phone number')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
   body('orderStatus')
     .notEmpty().withMessage('Order status is required')
     .isIn(['pending', 'confirmed']).withMessage('Invalid order status')
@@ -309,7 +307,7 @@ const createKhaltiOrder = [
     .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
   body('paymentStatus')
     .notEmpty().withMessage('Payment status is required')
-    .isIn(['pending', 'paid']).withMessage('Invalid payment status')
+    .isIn(['pending', 'paid', 'initiated']).withMessage('Invalid payment status')
     .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
   body('orderDate')
     .notEmpty().withMessage('Order date is required')
@@ -340,10 +338,6 @@ const createKhaltiOrder = [
     .notEmpty().withMessage('Course ID is required')
     .isMongoId().withMessage('Invalid course ID')
     .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
-  body('coursePricing')
-    .notEmpty().withMessage('Course pricing is required')
-    .isFloat({ min: 0 }).withMessage('Course pricing must be a positive number')
-    .customSanitizer((value) => sanitizeHtml(value.toString(), { allowedTags: [], allowedAttributes: {} })),
 
   // Controller logic
   async (req, res) => {
@@ -356,9 +350,6 @@ const createKhaltiOrder = [
     try {
       const {
         userId,
-        fName,
-        email,
-        phone,
         orderStatus,
         paymentMethod,
         paymentStatus,
@@ -370,8 +361,47 @@ const createKhaltiOrder = [
         courseImage,
         courseTitle,
         courseId,
-        coursePricing,
       } = req.body;
+
+      // Fetch user data
+      const user = await User.findById(userId).select('fName email phone');
+      if (!user) {
+        logger.warn('User not found during Khalti order creation', { userId });
+        return res.status(404).json({
+          success: false,
+          message: 'User not found',
+        });
+      }
+      if (!user.fName || !user.email) {
+        logger.warn('Missing required user fields', { userId, fName: user.fName, email: user.email });
+        return res.status(400).json({
+          success: false,
+          message: 'User missing required fields: first name or email',
+        });
+      }
+
+      const fName = user.fName;
+      const email = user.email;
+      const phone = user.phone || '9800000001'; // Fallback phone number
+
+      // Fetch course pricing
+      const course = await Course.findById(courseId).select('pricing');
+      if (!course) {
+        logger.warn('Course not found during Khalti order creation', { courseId });
+        return res.status(404).json({
+          success: false,
+          message: 'Course not found',
+        });
+      }
+
+      const coursePricing = course.pricing;
+      if (!coursePricing || coursePricing < 0) {
+        logger.warn('Invalid course pricing', { courseId, pricing: coursePricing });
+        return res.status(400).json({
+          success: false,
+          message: 'Invalid or missing course pricing',
+        });
+      }
 
       const coursePricin = coursePricing * 100;
       const coursePricingStr = String(coursePricin);
@@ -379,8 +409,8 @@ const createKhaltiOrder = [
       const response = await axios.post(
         "https://dev.khalti.com/api/v2/epayment/initiate/",
         {
-          return_url: "http://localhost:5173/payment-return",
-          website_url: "http://localhost:5173",
+          return_url: "https://localhost:5173/payment-return",
+          website_url: "https://localhost:5173",
           amount: coursePricingStr,
           purchase_order_id: `order_${userId}_${Date.now()}`,
           purchase_order_name: "Course Payment",
@@ -403,6 +433,7 @@ const createKhaltiOrder = [
           userId,
           fName,
           email,
+          phone,
           orderStatus,
           paymentMethod,
           paymentStatus,
@@ -454,10 +485,20 @@ const verifyPayment = [
     try {
       const { transactionId } = req.body;
 
+      // Ensure globalOrderDetails has required fields
+      if (!globalOrderDetails.userId || !globalOrderDetails.courseId) {
+        logger.warn('Missing global order details', { globalOrderDetails });
+        return res.status(400).json({
+          success: false,
+          message: 'Missing order details',
+        });
+      }
+
       const newOrder = new Order({
         userId: globalOrderDetails.userId,
         fName: globalOrderDetails.fName,
         email: globalOrderDetails.email,
+        phone: globalOrderDetails.phone,
         orderStatus: "confirmed",
         paymentMethod: "khalti",
         paymentStatus: "paid",
@@ -539,19 +580,6 @@ const initiateKhaltiPayment = [
     .notEmpty().withMessage('User ID is required')
     .isMongoId().withMessage('Invalid user ID')
     .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
-  body('fName')
-    .trim()
-    .notEmpty().withMessage('First name is required')
-    .isLength({ min: 2 }).withMessage('First name must be at least 2 characters long')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
-  body('email')
-    .isEmail().withMessage('Please provide a valid email address')
-    .normalizeEmail()
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
-  body('phone')
-    .notEmpty().withMessage('Phone number is required')
-    .isMobilePhone().withMessage('Invalid phone number')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
   body('coursePricing')
     .notEmpty().withMessage('Course pricing is required')
     .isFloat({ min: 0 }).withMessage('Course pricing must be a positive number')
@@ -566,14 +594,35 @@ const initiateKhaltiPayment = [
     }
 
     try {
-      const { userId, fName, email, phone, coursePricing } = req.body;
+      const { userId, coursePricing } = req.body;
+
+      // Fetch user data
+      const user = await User.findById(userId).select('fName email phone');
+      if (!user) {
+        logger.warn('User not found during Khalti payment initiation', { userId });
+        return res.status(404).json({
+          success: false,
+          message: 'User not found',
+        });
+      }
+      if (!user.fName || !user.email) {
+        logger.warn('Missing required user fields', { userId, fName: user.fName, email: user.email });
+        return res.status(400).json({
+          success: false,
+          message: 'User missing required fields: first name or email',
+        });
+      }
+
+      const fName = user.fName;
+      const email = user.email;
+      const phone = user.phone || '9800000001'; // Fallback phone number
 
       const amountInPaisa = coursePricing * 100;
       const amountStr = String(amountInPaisa);
 
       const khaltiPayload = {
-        return_url: "http://localhost:5173/payment-return",
-        website_url: "http://localhost:5173",
+        return_url: "https://localhost:5173/payment-return",
+        website_url: "https://localhost:5173",
         amount: amountStr,
         purchase_order_id: `order_${userId}_${Date.now()}`,
         purchase_order_name: "Course Payment",

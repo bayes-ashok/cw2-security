@@ -64,8 +64,6 @@ function StudentViewCourseDetailsPage() {
   async function handleCreatePayment() {
     const paymentPayload = {
       userId: auth?.user?._id,
-      fName: auth?.user?.fName,
-      email: auth?.user?.email,
       orderStatus: "pending",
       paymentMethod: "paypal",
       paymentStatus: "initiated",
@@ -265,9 +263,6 @@ function StudentViewCourseDetailsPage() {
                   console.log("hi")
                   const paymentPayload = {
                     userId: auth?.user?._id,
-                    fName: auth?.user?.fName,
-                    email: auth?.user?.email,
-                    phone: "9800000001",
                     orderStatus: "pending",
                     paymentMethod: "khalti",
                     paymentStatus: "initiated",
@@ -279,7 +274,6 @@ function StudentViewCourseDetailsPage() {
                     courseImage: studentViewCourseDetails?.image,
                     courseTitle: studentViewCourseDetails?.title,
                     courseId: studentViewCourseDetails?._id,
-                    coursePricing: studentViewCourseDetails?.pricing,
                   };
 
                   try {
@@ -294,6 +288,7 @@ function StudentViewCourseDetailsPage() {
                     }
                   } catch (error) {
                     console.error(error);
+                    alert(error)
                   }
                 }}
                 className="w-auto h-auto mx-auto flex"
