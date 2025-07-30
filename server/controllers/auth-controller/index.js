@@ -26,8 +26,6 @@ const transporter = nodemailer.createTransport({
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
-
-// Register User with Email Verification
 const registerUser = [
   // Validation rules
   body('fName')
@@ -85,6 +83,7 @@ const registerUser = [
         email,
         role,
         password: hashPassword,
+        prevPasswords: [hashPassword], // Store the hashed password in prevPasswords
         phone,
         image: image ? sanitizeHtml(image, { allowedTags: [], allowedAttributes: {} }) : image,
         verified: false,
@@ -369,8 +368,6 @@ const verifyOTP = [
     }
   }
 ];
-
-// Update User Details
 const updateUserDetails = [
   body('fName')
     .optional()
@@ -429,7 +426,18 @@ const updateUserDetails = [
       if (image) updateFields.image = sanitizeHtml(image, { allowedTags: [], allowedAttributes: {} });
       if (password) {
         const salt = await bcrypt.genSalt(10);
-        updateFields.password = await bcrypt.hash(password, salt);
+        const hashedNewPassword = await bcrypt.hash(password, salt);
+        // Check if new password matches any previous passwords
+        for (const prevPassword of user.prevPasswords) {
+          if (await bcrypt.compare(password, prevPassword)) {
+            logger.warn('New password matches a previous password', { userId });
+            return res.status(400).json({
+              success: false,
+              message: "This password is already used. Please try new password.",
+            });
+          }
+        }
+        updateFields.password = hashedNewPassword;
         updateFields.prevPasswords = [...user.prevPasswords, user.password].slice(-5);
       }
       if (twoFactorEnabled !== undefined) {
