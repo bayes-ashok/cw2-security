@@ -202,3 +202,111 @@
 {"courseId":"67c553783964626e20f05567","level":"warn","message":"Student course record not found","studentId":"6889c8ccb3ab1f008c1a28f7","timestamp":"2025-07-30T08:05:59.858Z"}
 {"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-30T08:05:59.904Z","title":"Professional English for MOFA Officers"}
 {"courseId":"67c553783964626e20f05567","level":"info","message":"Khalti order initiated","timestamp":"2025-07-30T08:06:02.525Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:07:39.418Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:07:42.671Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:07:42.692Z"}
+{"errors":[{"location":"params","msg":"Invalid student ID","path":"studentId","type":"field","value":"undefined"}],"level":"error","message":"Validation errors during course purchase check","timestamp":"2025-07-30T08:07:43.856Z"}
+{"errors":[{"location":"params","msg":"Invalid student ID","path":"studentId","type":"field","value":"undefined"}],"level":"error","message":"Validation errors during course purchase check","timestamp":"2025-07-30T08:07:44.642Z"}
+{"errors":[{"location":"params","msg":"Invalid student ID","path":"studentId","type":"field","value":"undefined"}],"level":"error","message":"Validation errors during course purchase check","timestamp":"2025-07-30T08:07:45.370Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-30T08:08:08.157Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:08:08.188Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:08:11.351Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:08:11.378Z"}
+{"courseId":"67c553783964626e20f05567","level":"warn","message":"Student course record not found","studentId":"6889c8ccb3ab1f008c1a28f7","timestamp":"2025-07-30T08:08:12.521Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-30T08:08:12.570Z","title":"Professional English for MOFA Officers"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Khalti order initiated","timestamp":"2025-07-30T08:08:14.939Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Khalti order saved successfully","orderId":"6889d2fbcda41a2eeb2b9872","timestamp":"2025-07-30T08:08:27.992Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"New student courses record created","timestamp":"2025-07-30T08:08:28.029Z","userId":"6889c8ccb3ab1f008c1a28f7"}
+{"error":"Cannot read properties of undefined (reading 'toString')","level":"error","message":"Error verifying Khalti payment","timestamp":"2025-07-30T08:08:28.033Z"}
+{"courseCount":1,"level":"info","message":"Retrieved courses for student","studentId":"6889c8ccb3ab1f008c1a28f7","timestamp":"2025-07-30T08:08:28.199Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:08:32.897Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:08:32.927Z"}
+{"errors":[{"location":"params","msg":"Invalid student ID","path":"studentId","type":"field","value":"undefined"}],"level":"error","message":"Validation errors during course purchase check","timestamp":"2025-07-30T08:08:34.410Z"}
+{"errors":[{"location":"params","msg":"Invalid student ID","path":"studentId","type":"field","value":"undefined"}],"level":"error","message":"Validation errors during course purchase check","timestamp":"2025-07-30T08:08:35.245Z"}
+{"errors":[{"location":"params","msg":"Invalid student ID","path":"studentId","type":"field","value":"undefined"}],"level":"error","message":"Validation errors during course purchase check","timestamp":"2025-07-30T08:08:37.622Z"}
+{"errors":[{"location":"params","msg":"Invalid student ID","path":"studentId","type":"field","value":"undefined"}],"level":"error","message":"Validation errors during course purchase check","timestamp":"2025-07-30T08:08:37.832Z"}
+{"errors":[{"location":"params","msg":"Invalid student ID","path":"studentId","type":"field","value":"undefined"}],"level":"error","message":"Validation errors during course purchase check","timestamp":"2025-07-30T08:08:38.022Z"}
+{"errors":[{"location":"params","msg":"Invalid student ID","path":"studentId","type":"field","value":"undefined"}],"level":"error","message":"Validation errors during course purchase check","timestamp":"2025-07-30T08:08:38.246Z"}
+{"errors":[{"location":"params","msg":"Invalid student ID","path":"studentId","type":"field","value":"undefined"}],"level":"error","message":"Validation errors during course purchase check","timestamp":"2025-07-30T08:08:38.823Z"}
+{"errors":[{"location":"params","msg":"Invalid student ID","path":"studentId","type":"field","value":"undefined"}],"level":"error","message":"Validation errors during course purchase check","timestamp":"2025-07-30T08:08:39.985Z"}
+{"errors":[{"location":"params","msg":"Invalid student ID","path":"studentId","type":"field","value":"undefined"}],"level":"error","message":"Validation errors during course purchase check","timestamp":"2025-07-30T08:08:42.123Z"}
+{"courseCount":1,"level":"info","message":"Retrieved courses for student","studentId":"6889c8ccb3ab1f008c1a28f7","timestamp":"2025-07-30T08:08:44.297Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:08:46.962Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-30T08:09:10.587Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:10.631Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:12.121Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:12.142Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Checked course purchase status","purchased":true,"studentId":"6889c8ccb3ab1f008c1a28f7","timestamp":"2025-07-30T08:09:13.330Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"No progress found for course","timestamp":"2025-07-30T08:09:13.394Z","userId":"6889c8ccb3ab1f008c1a28f7"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:15.017Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:15.035Z"}
+{"courseId":"67c553ed3964626e20f05575","level":"info","message":"Checked course purchase status","purchased":false,"studentId":"6889c8ccb3ab1f008c1a28f7","timestamp":"2025-07-30T08:09:16.272Z"}
+{"courseId":"67c553ed3964626e20f05575","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-30T08:09:16.309Z","title":"IQ & Logical Reasoning for NASU"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:17.785Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:17.800Z"}
+{"courseId":"67c85fbc6a0f7095171e44ba","level":"info","message":"Checked course purchase status","purchased":false,"studentId":"6889c8ccb3ab1f008c1a28f7","timestamp":"2025-07-30T08:09:19.048Z"}
+{"courseId":"67c553ed3964626e20f05575","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-30T08:09:19.074Z","title":"IQ & Logical Reasoning for NASU"}
+{"courseId":"67c85fbc6a0f7095171e44ba","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-30T08:09:19.091Z","title":"Foreign Affairs Management"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:25.682Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:25.704Z"}
+{"courseId":"67c85da96a0f7095171e44a4","level":"info","message":"Checked course purchase status","purchased":false,"studentId":"6889c8ccb3ab1f008c1a28f7","timestamp":"2025-07-30T08:09:27.824Z"}
+{"courseId":"67c85fbc6a0f7095171e44ba","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-30T08:09:27.850Z","title":"Foreign Affairs Management"}
+{"courseId":"67c85da96a0f7095171e44a4","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-30T08:09:27.874Z","title":"School Administration & Management"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:31.030Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:35.101Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:35.114Z"}
+{"courseId":"67c85da96a0f7095171e44a4","level":"info","message":"Checked course purchase status","purchased":false,"studentId":"6889c8ccb3ab1f008c1a28f7","timestamp":"2025-07-30T08:09:38.128Z"}
+{"courseId":"67c85da96a0f7095171e44a4","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-30T08:09:38.154Z","title":"School Administration & Management"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:39.729Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:39.753Z"}
+{"count":0,"filters":{"category":{"$in":["health-services"]}},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:42.207Z"}
+{"count":0,"filters":{"category":{"$in":["health-services","judicial-services"]}},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:43.171Z"}
+{"count":0,"filters":{"category":{"$in":["judicial-services"]}},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:44.055Z"}
+{"count":0,"filters":{"category":{"$in":["judicial-services","engineering-services"]}},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:44.974Z"}
+{"count":1,"filters":{"category":{"$in":["judicial-services","engineering-services","education-services"]}},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:45.893Z"}
+{"count":1,"filters":{"category":{"$in":["judicial-services","education-services"]}},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:47.954Z"}
+{"count":1,"filters":{"category":{"$in":["education-services"]}},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:48.813Z"}
+{"count":1,"filters":{"category":{"$in":["education-services","administrative-services"]}},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:49.838Z"}
+{"count":1,"filters":{"category":{"$in":["education-services"]}},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:50.395Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:09:51.922Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:14:19.340Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:26:05.918Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T08:32:09.666Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-30T08:32:13.670Z","userId":"6889c8ccb3ab1f008c1a28f7"}
+{"email":"ashok111210@gmail.com","level":"info","message":"User details updated successfully","timestamp":"2025-07-30T08:32:25.998Z","userId":"6889c8ccb3ab1f008c1a28f7"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-30T08:32:29.291Z","userId":"6889c8ccb3ab1f008c1a28f7"}
+{"errors":[{"location":"body","msg":"Captcha token is required","path":"captchaToken","type":"field"}],"level":"error","message":"Validation errors during user registration","timestamp":"2025-07-30T08:49:03.647Z"}
+{"errors":[{"location":"body","msg":"Captcha token is required","path":"captchaToken","type":"field"}],"level":"error","message":"Validation errors during user registration","timestamp":"2025-07-30T08:49:19.526Z"}
+{"email":"ashok111210@gmail.com","fName":"asdfghjkl","level":"info","message":"User registered successfully","timestamp":"2025-07-30T08:50:46.816Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"Verification email sent","timestamp":"2025-07-30T08:50:50.796Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"Email verified successfully","timestamp":"2025-07-30T08:51:10.800Z"}
+{"email":"ashok111210@gmail.com","fName":"asdfghjkl","level":"warn","message":"User name or email already exists","timestamp":"2025-07-30T08:51:42.681Z"}
+{"email":"ashok111210@gmail.com","level":"warn","message":"Captcha verification failed","timestamp":"2025-07-30T08:52:03.116Z"}
+{"email":"ashok111210@gmail.com","level":"warn","message":"Captcha verification failed","timestamp":"2025-07-30T08:52:10.997Z"}
+{"email":"ashok111210@gmail.com","fName":"sdfghjk","level":"info","message":"User registered successfully","timestamp":"2025-07-30T08:52:36.754Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"Verification email sent","timestamp":"2025-07-30T08:52:40.002Z"}
+{"email":"ashok111210@gmail.com","fName":"sdfghjk","level":"warn","message":"User name or email already exists","timestamp":"2025-07-30T08:53:26.954Z"}
+{"email":"ashok111210@gmail.com","level":"warn","message":"Captcha verification failed","timestamp":"2025-07-30T08:53:40.571Z"}
+{"email":"ashok111210@gmail.com","fName":"sdfghjk","level":"info","message":"User registered successfully","timestamp":"2025-07-30T08:53:48.111Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"Verification email sent","timestamp":"2025-07-30T08:53:51.373Z"}
+{"email":"ashok111210@gmail.com","fName":"sdfghjk","level":"info","message":"User registered successfully","timestamp":"2025-07-30T08:54:35.287Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"Verification email sent","timestamp":"2025-07-30T08:54:38.466Z"}
+{"email":"ashok111210@gmail.com","fName":"asdfghj","level":"info","message":"User registered successfully","timestamp":"2025-07-30T09:01:06.074Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"Verification email sent","timestamp":"2025-07-30T09:01:10.257Z"}
+{"email":"ashok111210@gmail.com","fName":"asdfghj","level":"info","message":"User registered successfully","timestamp":"2025-07-30T09:03:54.357Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"Verification email sent","timestamp":"2025-07-30T09:03:57.701Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"Email verified successfully","timestamp":"2025-07-30T09:04:11.264Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-30T09:07:18.686Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T09:07:18.745Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-30T09:07:56.664Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T09:07:56.694Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-30T09:10:08.158Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T09:10:08.197Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-30T09:10:20.030Z","userId":"6889dffacc65bb812e165c45"}
+{"email":"ashok111210@gmail.com","level":"info","message":"User details updated successfully","timestamp":"2025-07-30T09:10:38.491Z","userId":"6889dffacc65bb812e165c45"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-30T09:10:42.503Z","userId":"6889dffacc65bb812e165c45"}
+{"email":"ashok111210@gmail.com","level":"info","message":"OTP sent to user","timestamp":"2025-07-30T09:11:09.534Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"OTP sent to user","timestamp":"2025-07-30T09:12:07.358Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"OTP sent to user","timestamp":"2025-07-30T09:14:47.473Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"OTP verified and user logged in successfully","timestamp":"2025-07-30T09:15:13.985Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T09:15:14.032Z"}

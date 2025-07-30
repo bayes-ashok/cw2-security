@@ -26,6 +26,7 @@ const transporter = nodemailer.createTransport({
 const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
+
 const registerUser = [
   // Validation rules
   body('fName')
@@ -88,6 +89,7 @@ const registerUser = [
         image: image ? sanitizeHtml(image, { allowedTags: [], allowedAttributes: {} }) : image,
         verified: false,
         verificationToken,
+        lastPasswordChange: Date.now(), // Set initial password change date
       });
 
       await newUser.save();
@@ -152,8 +154,6 @@ const verifyEmail = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error", error: error.message });
   }
 };
-
-// Login User
 const loginUser = [
   body('email')
     .isEmail().withMessage('Please provide a valid email address')
@@ -172,6 +172,7 @@ const loginUser = [
     const { email, password } = req.body;
     const LOCK_TIME = 5 * 60 * 1000; // 5 minutes in ms
     const MAX_ATTEMPTS = 5;
+    const ONE_MONTH = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 
     try {
       const checkUser = await User.findOne({ email });
@@ -218,6 +219,10 @@ const loginUser = [
           message: "Your account is not verified. Please check your email.",
         });
       }
+
+      // Check if password change is recommended
+      const isPasswordChangeRecommended = checkUser.lastPasswordChange &&
+        Date.now() - new Date(checkUser.lastPasswordChange).getTime() > ONE_MONTH;
 
       if (checkUser.twoFactorEnabled) {
         // Generate and store OTP
@@ -270,10 +275,16 @@ const loginUser = [
         { expiresIn: "120m" }
       );
 
+      // Set response message based on password age
+      let message = "Logged in successfully";
+      if (isPasswordChangeRecommended) {
+        message = "Logged in successfully. \nWe recommend changing your password as it has been over a month since your last update.";
+      }
+
       logger.info('User logged in successfully', { email });
       res.status(200).json({
         success: true,
-        message: "Logged in successfully",
+        message,
         data: {
           accessToken,
           user: {
@@ -310,6 +321,7 @@ const verifyOTP = [
     }
 
     const { userId, otp } = req.body;
+    const ONE_MONTH = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 
     try {
       const user = await User.findById(userId);
@@ -333,6 +345,10 @@ const verifyOTP = [
       user.otpExpires = undefined;
       await user.save();
 
+      // Check if password change is required
+      const passwordChangeRequired = user.lastPasswordChange &&
+        Date.now() - new Date(user.lastPasswordChange).getTime() > ONE_MONTH;
+
       const accessToken = jwt.sign(
         {
           _id: user._id,
@@ -341,6 +357,7 @@ const verifyOTP = [
           role: user.role,
           phone: user.phone,
           image: user.image,
+          passwordChangeRequired, // Include in token
         },
         "JWT_SECRET",
         { expiresIn: "120m" }
@@ -359,6 +376,7 @@ const verifyOTP = [
             role: user.role,
             phone: user.phone,
             image: user.image,
+            passwordChangeRequired,
           },
         },
       });
@@ -368,6 +386,7 @@ const verifyOTP = [
     }
   }
 ];
+
 const updateUserDetails = [
   body('fName')
     .optional()
@@ -439,6 +458,7 @@ const updateUserDetails = [
         }
         updateFields.password = hashedNewPassword;
         updateFields.prevPasswords = [...user.prevPasswords, user.password].slice(-5);
+        updateFields.lastPasswordChange = Date.now(); // Update password change date
       }
       if (twoFactorEnabled !== undefined) {
         updateFields.twoFactorEnabled = twoFactorEnabled;
@@ -472,7 +492,7 @@ const getUserDetails = async (req, res) => {
     }
 
     const userId = req.user.id;
-    const user = await User.findById(userId).select('fName phone twoFactorEnabled');
+    const user = await User.findById(userId).select('fName phone twoFactorEnabled lastPasswordChange');
 
     if (!user) {
       logger.warn('User not found during details fetch', { userId });
@@ -485,7 +505,8 @@ const getUserDetails = async (req, res) => {
       user: {
         fName: user.fName,
         phone: user.phone,
-        twoFactorEnabled: user.twoFactorEnabled
+        twoFactorEnabled: user.twoFactorEnabled,
+        lastPasswordChange: user.lastPasswordChange,
       }
     });
   } catch (error) {
@@ -494,4 +515,31 @@ const getUserDetails = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, verifyEmail, loginUser, verifyOTP, updateUserDetails, getUserDetails };
+// Middleware to check if password change is required
+const requirePasswordChange = async (req, res, next) => {
+  const ONE_MONTH = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+    if (!user) {
+      logger.warn('User not found during password change check', { userId });
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    if (user.lastPasswordChange && Date.now() - new Date(user.lastPasswordChange).getTime() > ONE_MONTH) {
+      logger.warn('Password change required', { userId, email: user.email });
+      return res.status(403).json({
+        success: false,
+        message: "Password change required. Please update your password to access the dashboard.",
+        passwordChangeRequired: true,
+      });
+    }
+
+    next();
+  } catch (error) {
+    logger.error('Error checking password change requirement', { error: error.message });
+    res.status(500).json({ success: false, message: "Internal server error", error: error.message });
+  }
+};
+
+module.exports = { registerUser, verifyEmail, loginUser, verifyOTP, updateUserDetails, getUserDetails, requirePasswordChange };

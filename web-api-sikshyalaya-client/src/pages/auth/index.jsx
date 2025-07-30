@@ -22,6 +22,7 @@ function AuthPage() {
     color: "",
   });
   const [suggestedPassword, setSuggestedPassword] = useState("");
+  const [successMessage, setSuccessMessage] = useState(""); // Add state for success message
   const {
     signInFormData,
     setSignInFormData,
@@ -99,6 +100,7 @@ function AuthPage() {
   function handleTabChange(value) {
     setActiveTab(value);
     setSuggestedPassword("");
+    setSuccessMessage(""); // Clear success message on tab change
   }
 
   function checkIfSignInFormIsValid() {
@@ -176,6 +178,18 @@ function AuthPage() {
       )}
     </div>
   );
+
+  // Modified signup submit handler
+  const handleSignUpSubmit = async (e) => {
+    const result = await handleRegisterUser(e, captchaToken);
+    if (result.success) {
+      setSuccessMessage("Registration successful! Please sign in.");
+      setActiveTab("signin"); // Switch to signin tab
+      setCaptchaToken(null); // Reset CAPTCHA
+    } else {
+      setSuccessMessage("Registration failed. Please try again.");
+    }
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-b from-gray-100 to-gray-50">
@@ -278,13 +292,24 @@ function AuthPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
+                    {successMessage && (
+                      <div
+                        className={`text-sm ${
+                          successMessage.includes("failed")
+                            ? "text-red-600"
+                            : "text-green-600"
+                        }`}
+                      >
+                        {successMessage}
+                      </div>
+                    )}
                     <CommonForm
                       formControls={enhancedSignUpFormControls}
                       buttonText={"Sign Up"}
                       formData={signUpFormData}
                       setFormData={setSignUpFormData}
                       isButtonDisabled={!checkIfSignUpFormIsValid()}
-                      handleSubmit={(e) => handleRegisterUser(e, captchaToken)}
+                      handleSubmit={handleSignUpSubmit} // Use updated handler
                       customContent={passwordStrengthContent}
                       onPasswordFocus={handlePasswordFocus}
                     />

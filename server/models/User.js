@@ -16,6 +16,7 @@ const UserSchema = new mongoose.Schema({
   twoFactorEnabled: { type: Boolean, default: false }, // Enable 2FA
   otp: { type: String }, // Store OTP
   otpExpires: { type: Date }, // OTP expiration time
+  lastPasswordChange: { type: Date, default: Date.now }, // Track last password change
 }, { timestamps: true });
 
 module.exports = mongoose.model("User", UserSchema);
