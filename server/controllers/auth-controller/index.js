@@ -95,7 +95,7 @@ const registerUser = [
       logger.info('User registered successfully', { email, fName });
 
       // Send verification email
-      const verificationLink = `http://localhost:5000/auth/verify-email?token=${verificationToken}`;
+      const verificationLink = `https://localhost:443/auth/verify-email?token=${verificationToken}`;
       const mailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
