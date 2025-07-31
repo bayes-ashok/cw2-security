@@ -21,7 +21,7 @@ const authenticate = (req, res, next) => {
     const payload = verifyToken(token, "JWT_SECRET");
 
  req.user = {
-      id: payload._id,        // Always use req.user.id
+      id: payload._id,        
       fName: payload.fName,
       email: payload.email,
       role: payload.role,

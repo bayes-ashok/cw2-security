@@ -310,3 +310,18 @@
 {"email":"ashok111210@gmail.com","level":"info","message":"OTP sent to user","timestamp":"2025-07-30T09:14:47.473Z"}
 {"email":"ashok111210@gmail.com","level":"info","message":"OTP verified and user logged in successfully","timestamp":"2025-07-30T09:15:13.985Z"}
 {"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T09:15:14.032Z"}
+{"count":5,"level":"info","message":"Retrieved all courses","timestamp":"2025-07-30T11:48:22.744Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"OTP sent to user","timestamp":"2025-07-30T11:48:59.255Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-30T11:49:40.588Z"}
+{"count":5,"level":"info","message":"Retrieved all courses","timestamp":"2025-07-30T11:50:56.662Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-30T16:21:57.580Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T16:21:57.661Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T16:27:05.767Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T16:30:04.549Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-30T16:34:03.758Z"}
+{"count":5,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-30T16:34:12.827Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-30T16:35:29.346Z"}
+{"count":5,"level":"info","message":"Retrieved all courses","timestamp":"2025-07-30T16:37:33.932Z"}
+{"count":5,"level":"info","message":"Retrieved all courses","timestamp":"2025-07-30T16:38:11.137Z"}
+{"count":5,"level":"info","message":"Retrieved all courses","timestamp":"2025-07-30T16:38:12.421Z"}
+{"count":5,"level":"info","message":"Retrieved all courses","timestamp":"2025-07-30T16:39:24.231Z"}
