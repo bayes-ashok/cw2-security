@@ -34,7 +34,6 @@ const addNewCourse = [
 
     try {
       const courseData = req.body;
-
       const instructor = await User.findById(courseData.instructorId);
       if (!instructor) {
         logger.warn('Instructor not found during course creation', { instructorId: courseData.instructorId });

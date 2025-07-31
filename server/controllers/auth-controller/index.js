@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
-const sanitizeHtml = require('sanitize-html');
+const xss = require('xss');
 require("dotenv").config();
 const axios = require("axios");
 const logger = require("../../middleware/logger");
@@ -27,29 +27,61 @@ const generateOTP = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
 
+// Password strength checker (aligned with frontend)
+const checkPasswordStrength = (password, fName, email) => {
+  const sanitizedFName = xss(fName || "").toLowerCase();
+  const sanitizedEmail = xss(email || "").toLowerCase();
+  const sanitizedPassword = xss(password || "").toLowerCase();
+
+  if (
+    (sanitizedFName && sanitizedPassword.includes(sanitizedFName)) ||
+    (sanitizedEmail && sanitizedPassword.includes(sanitizedEmail.split("@")[0]))
+  ) {
+    return {
+      score: 0,
+      message: "Password cannot contain your name or email",
+    };
+  }
+
+  let score = 0;
+  if (password.length >= 8) score += 1;
+  if (password.length >= 12) score += 1;
+  if (/[A-Z]/.test(password)) score += 1;
+  if (/[a-z]/.test(password)) score += 1;
+  if (/[0-9]/.test(password)) score += 1;
+  if (/[^A-Za-z0-9]/.test(password)) score += 1;
+
+  return { score, message: score >= 3 ? "Valid password" : "Password too weak" };
+};
+
 const registerUser = [
-  // Validation rules
   body('fName')
     .trim()
     .notEmpty().withMessage('First name is required')
     .isLength({ min: 2 }).withMessage('First name must be at least 2 characters long')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+    .customSanitizer((value) => xss(value)),
   body('email')
     .isEmail().withMessage('Please provide a valid email address')
     .normalizeEmail()
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+    .customSanitizer((value) => xss(value)),
   body('password')
-    .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
-    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('Password must contain at least one uppercase letter, one lowercase letter, and one number'),
+    .notEmpty().withMessage('Password is required')
+    .custom((value, { req }) => {
+      const { score, message } = checkPasswordStrength(value, req.body.fName, req.body.email);
+      if (score < 3) {
+        throw new Error(message);
+      }
+      return true;
+    })
+    .customSanitizer((value) => xss(value)),
   body('phone')
     .optional()
     .isMobilePhone().withMessage('Please provide a valid phone number')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+    .customSanitizer((value) => xss(value)),
   body('captchaToken')
     .notEmpty().withMessage('Captcha token is required')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+    .customSanitizer((value) => xss(value)),
 
-  // Controller logic
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -59,6 +91,13 @@ const registerUser = [
 
     try {
       let { fName, email, password, phone, image, captchaToken } = req.body;
+      fName = xss(fName);
+      email = xss(email);
+      password = xss(password);
+      phone = phone ? xss(phone) : phone;
+      image = image ? xss(image) : image;
+      captchaToken = xss(captchaToken);
+
       const captchaVerifyURL = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${captchaToken}`;
       const captchaRes = await axios.post(captchaVerifyURL);
       if (!captchaRes.data.success) {
@@ -78,33 +117,33 @@ const registerUser = [
 
       const hashPassword = await bcrypt.hash(password, 10);
       const verificationToken = crypto.randomBytes(32).toString("hex");
+      const hashedVerificationToken = await bcrypt.hash(verificationToken, 10);
 
       const newUser = new User({
         fName,
         email,
         role,
         password: hashPassword,
-        prevPasswords: [hashPassword], // Store the hashed password in prevPasswords
+        prevPasswords: [hashPassword],
         phone,
-        image: image ? sanitizeHtml(image, { allowedTags: [], allowedAttributes: {} }) : image,
+        image,
         verified: false,
-        verificationToken,
-        lastPasswordChange: Date.now(), // Set initial password change date
+        verificationToken: hashedVerificationToken,
+        lastPasswordChange: Date.now(),
       });
 
       await newUser.save();
       logger.info('User registered successfully', { email, fName });
 
-      // Send verification email
       const verificationLink = `https://localhost:443/auth/verify-email?token=${verificationToken}`;
       const mailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
         subject: "Verify Your Email",
-        html: sanitizeHtml(
+        html: xss(
           `<p>Click the link below to verify your email:</p>
            <a href="${verificationLink}">Verify Email</a>`,
-          { allowedTags: ['p', 'a'], allowedAttributes: { 'a': ['href'] } }
+          { whiteList: { p: [], a: ['href'] } }
         ),
       };
 
@@ -131,15 +170,20 @@ const registerUser = [
   }
 ];
 
-// Verify Email
 const verifyEmail = async (req, res) => {
   try {
     const { token } = req.query;
-    const sanitizedToken = sanitizeHtml(token, { allowedTags: [], allowedAttributes: {} });
+    const sanitizedToken = xss(token);
 
-    const user = await User.findOne({ verificationToken: sanitizedToken });
+    const user = await User.findOne({ verificationToken: { $ne: null } });
     if (!user) {
       logger.warn('Invalid or expired verification token', { token: sanitizedToken });
+      return res.status(400).json({ success: false, message: "Invalid or expired token" });
+    }
+
+    const isTokenValid = await bcrypt.compare(sanitizedToken, user.verificationToken);
+    if (!isTokenValid) {
+      logger.warn('Invalid verification token', { token: sanitizedToken });
       return res.status(400).json({ success: false, message: "Invalid or expired token" });
     }
 
@@ -154,13 +198,15 @@ const verifyEmail = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error", error: error.message });
   }
 };
+
 const loginUser = [
   body('email')
     .isEmail().withMessage('Please provide a valid email address')
     .normalizeEmail()
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+    .customSanitizer((value) => xss(value)),
   body('password')
-    .notEmpty().withMessage('Password is required'),
+    .notEmpty().withMessage('Password is required')
+    .customSanitizer((value) => xss(value)),
 
   async (req, res) => {
     const errors = validationResult(req);
@@ -220,26 +266,24 @@ const loginUser = [
         });
       }
 
-      // Check if password change is recommended
       const isPasswordChangeRecommended = checkUser.lastPasswordChange &&
         Date.now() - new Date(checkUser.lastPasswordChange).getTime() > ONE_MONTH;
 
       if (checkUser.twoFactorEnabled) {
-        // Generate and store OTP
         const otp = generateOTP();
         const otpExpires = Date.now() + 5 * 60 * 1000; // 5 minutes expiration
-        checkUser.otp = otp;
+        const hashedOtp = await bcrypt.hash(otp, 10);
+        checkUser.otp = hashedOtp;
         checkUser.otpExpires = otpExpires;
         await checkUser.save();
 
-        // Send OTP email
         const mailOptions = {
           from: process.env.EMAIL_USER,
           to: email,
           subject: "Your OTP for Login",
-          html: sanitizeHtml(
+          html: xss(
             `<p>Your one-time password (OTP) is <strong>${otp}</strong>. It expires in 5 minutes.</p>`,
-            { allowedTags: ['p', 'strong'], allowedAttributes: {} }
+            { whiteList: { p: [], strong: [] } }
           ),
         };
 
@@ -275,7 +319,6 @@ const loginUser = [
         { expiresIn: "120m" }
       );
 
-      // Set response message based on password age
       let message = "Logged in successfully";
       if (isPasswordChangeRecommended) {
         message = "Logged in successfully. \nWe recommend changing your password as it has been over a month since your last update.";
@@ -304,14 +347,15 @@ const loginUser = [
   }
 ];
 
-// Verify OTP
 const verifyOTP = [
   body('userId')
-    .notEmpty().withMessage('User ID is required'),
+    .notEmpty().withMessage('User ID is required')
+    .customSanitizer((value) => xss(value)),
   body('otp')
     .notEmpty().withMessage('OTP is required')
     .isNumeric().withMessage('OTP must be numeric')
-    .isLength({ min: 6, max: 6 }).withMessage('OTP must be 6 digits'),
+    .isLength({ min: 6, max: 6 }).withMessage('OTP must be 6 digits')
+    .customSanitizer((value) => xss(value)),
 
   async (req, res) => {
     const errors = validationResult(req);
@@ -335,17 +379,16 @@ const verifyOTP = [
         return res.status(400).json({ success: false, message: "Invalid or expired OTP" });
       }
 
-      if (user.otp !== otp) {
+      const isOtpValid = await bcrypt.compare(otp, user.otp);
+      if (!isOtpValid) {
         logger.warn('Incorrect OTP provided', { userId });
         return res.status(400).json({ success: false, message: "Incorrect OTP" });
       }
 
-      // Clear OTP fields
       user.otp = undefined;
       user.otpExpires = undefined;
       await user.save();
 
-      // Check if password change is required
       const passwordChangeRequired = user.lastPasswordChange &&
         Date.now() - new Date(user.lastPasswordChange).getTime() > ONE_MONTH;
 
@@ -357,7 +400,7 @@ const verifyOTP = [
           role: user.role,
           phone: user.phone,
           image: user.image,
-          passwordChangeRequired, // Include in token
+          passwordChangeRequired,
         },
         "JWT_SECRET",
         { expiresIn: "120m" }
@@ -392,21 +435,31 @@ const updateUserDetails = [
     .optional()
     .trim()
     .isLength({ min: 2 }).withMessage('First name must be at least 2 characters long')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+    .customSanitizer((value) => xss(value)),
   body('phone')
     .optional()
     .isMobilePhone().withMessage('Please provide a valid phone number')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+    .customSanitizer((value) => xss(value)),
   body('password')
     .optional()
-    .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long')
-    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/).withMessage('Password must contain at least one uppercase letter, one lowercase letter, and one number'),
+    .custom((value, { req }) => {
+      if (!value) return true;
+      const fName = req.body.fName || req.user.fName;
+      const { score, message } = checkPasswordStrength(value, fName, req.user.email);
+      if (score < 3) {
+        throw new Error(message);
+      }
+      return true;
+    })
+    .customSanitizer((value) => xss(value)),
   body('currentPassword')
-    .notEmpty().withMessage('Current password is required'),
+    .if(body('password').exists())
+    .notEmpty().withMessage('Current password is required')
+    .customSanitizer((value) => xss(value)),
   body('role')
     .optional()
     .isIn(['user']).withMessage('Role must be either user')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+    .customSanitizer((value) => xss(value)),
   body('twoFactorEnabled')
     .optional()
     .isBoolean().withMessage('Two-factor enabled must be a boolean'),
@@ -433,20 +486,25 @@ const updateUserDetails = [
         return res.status(404).json({ success: false, message: "User not found" });
       }
 
-      const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
-      if (!isPasswordValid) {
-        logger.warn('Incorrect current password during user update', { userId });
-        return res.status(401).json({ success: false, message: "Incorrect current password" });
+      if (password && !currentPassword) {
+        logger.warn('Current password missing during password update', { userId });
+        return res.status(400).json({ success: false, message: "Current password is required to update password" });
+      }
+
+      if (password) {
+        const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+        if (!isPasswordValid) {
+          logger.warn('Incorrect current password during user update', { userId });
+          return res.status(401).json({ success: false, message: "Incorrect current password" });
+        }
       }
 
       let updateFields = {};
-      if (fName) updateFields.fName = fName;
-      if (phone) updateFields.phone = phone;
-      if (image) updateFields.image = sanitizeHtml(image, { allowedTags: [], allowedAttributes: {} });
+      if (fName) updateFields.fName = xss(fName);
+      if (phone) updateFields.phone = xss(phone);
+      if (image) updateFields.image = xss(image);
       if (password) {
-        const salt = await bcrypt.genSalt(10);
-        const hashedNewPassword = await bcrypt.hash(password, salt);
-        // Check if new password matches any previous passwords
+        const hashedNewPassword = await bcrypt.hash(password, 10);
         for (const prevPassword of user.prevPasswords) {
           if (await bcrypt.compare(password, prevPassword)) {
             logger.warn('New password matches a previous password', { userId });
@@ -458,7 +516,7 @@ const updateUserDetails = [
         }
         updateFields.password = hashedNewPassword;
         updateFields.prevPasswords = [...user.prevPasswords, user.password].slice(-5);
-        updateFields.lastPasswordChange = Date.now(); // Update password change date
+        updateFields.lastPasswordChange = Date.now();
       }
       if (twoFactorEnabled !== undefined) {
         updateFields.twoFactorEnabled = twoFactorEnabled;
@@ -483,7 +541,6 @@ const updateUserDetails = [
   }
 ];
 
-// Get User Details
 const getUserDetails = async (req, res) => {
   try {
     if (!req.user) {
@@ -503,8 +560,8 @@ const getUserDetails = async (req, res) => {
     res.status(200).json({
       success: true,
       user: {
-        fName: user.fName,
-        phone: user.phone,
+        fName: xss(user.fName),
+        phone: user.phone ? xss(user.phone) : user.phone,
         twoFactorEnabled: user.twoFactorEnabled,
         lastPasswordChange: user.lastPasswordChange,
       }
@@ -515,7 +572,6 @@ const getUserDetails = async (req, res) => {
   }
 };
 
-// Middleware to check if password change is required
 const requirePasswordChange = async (req, res, next) => {
   const ONE_MONTH = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
   try {

@@ -1,0 +1,26 @@
+{"email":"ashok111210@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-31T04:23:21.397Z"}
+{"count":5,"level":"info","message":"Retrieved all courses","timestamp":"2025-07-31T04:23:21.466Z"}
+{"count":5,"level":"info","message":"Retrieved all courses","timestamp":"2025-07-31T04:54:39.774Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-31T07:53:17.146Z"}
+{"count":5,"level":"info","message":"Retrieved all courses","timestamp":"2025-07-31T07:53:17.234Z"}
+{"count":5,"level":"info","message":"Retrieved all courses","timestamp":"2025-07-31T07:54:33.032Z"}
+{"courseId":"67c552e83964626e20f0555c","level":"info","message":"Course retrieved successfully","timestamp":"2025-07-31T07:54:37.090Z","title":"Diplomatic Affairs for MOFA Officers"}
+{"count":5,"level":"info","message":"Retrieved all courses","timestamp":"2025-07-31T07:59:57.730Z"}
+{"errors":[{"location":"body","msg":"Instructor ID is required","path":"instructorId","type":"field"},{"location":"body","msg":"Invalid instructor ID","path":"instructorId","type":"field"}],"level":"error","message":"Validation errors during course creation","timestamp":"2025-07-31T08:15:24.669Z"}
+{"errors":[{"location":"body","msg":"Instructor ID is required","path":"instructorId","type":"field"},{"location":"body","msg":"Invalid instructor ID","path":"instructorId","type":"field"}],"level":"error","message":"Validation errors during course creation","timestamp":"2025-07-31T08:27:04.783Z"}
+{"level":"warn","message":"Instructor not found during course creation","timestamp":"2025-07-31T08:31:57.515Z"}
+{"level":"warn","message":"Instructor not found during course creation","timestamp":"2025-07-31T08:32:34.208Z"}
+{"error":"Cannot read properties of undefined (reading 'id')","level":"error","message":"Error during course creation","timestamp":"2025-07-31T08:32:53.756Z"}
+{"error":"Cannot read properties of undefined (reading 'id')","level":"error","message":"Error during course creation","timestamp":"2025-07-31T08:33:14.673Z"}
+{"error":"Cannot read properties of undefined (reading '_id')","level":"error","message":"Error during course creation","timestamp":"2025-07-31T08:33:31.400Z"}
+{"instructorId":"6889dffacc65bb812e165c45","level":"warn","message":"Instructor not found during course creation","timestamp":"2025-07-31T08:37:22.246Z"}
+{"courseId":"688b2b86076f73d0c1b65de5","level":"info","message":"Course created successfully","timestamp":"2025-07-31T08:38:30.536Z","title":"asdfg"}
+{"count":6,"level":"info","message":"Retrieved all courses","timestamp":"2025-07-31T08:38:32.591Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-31T08:39:18.074Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T08:39:18.111Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T08:39:20.968Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T08:39:20.999Z"}
+{"courseId":"688b2b86076f73d0c1b65de5","level":"warn","message":"Student course record not found","studentId":"6889dffacc65bb812e165c45","timestamp":"2025-07-31T08:39:22.827Z"}
+{"courseId":"688b2b86076f73d0c1b65de5","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T08:39:22.867Z","title":"asdfg"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-31T08:39:29.325Z","userId":"6889dffacc65bb812e165c45"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T08:39:32.980Z"}

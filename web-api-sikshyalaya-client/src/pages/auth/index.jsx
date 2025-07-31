@@ -13,6 +13,7 @@ import {
 import ReCAPTCHA from "react-google-recaptcha";
 import CommonForm from "@/components/common-form";
 import { signInFormControls, signUpFormControls, otpFormControls } from "@/config";
+import DOMPurify from "dompurify";
 
 function AuthPage() {
   const [activeTab, setActiveTab] = useState("signin");
@@ -21,8 +22,7 @@ function AuthPage() {
     label: "",
     color: "",
   });
-  const [suggestedPassword, setSuggestedPassword] = useState("");
-  const [successMessage, setSuccessMessage] = useState(""); // Add state for success message
+  const [successMessage, setSuccessMessage] = useState("");
   const {
     signInFormData,
     setSignInFormData,
@@ -40,7 +40,23 @@ function AuthPage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [captchaToken, setCaptchaToken] = useState(null);
 
-  const checkPasswordStrength = (password) => {
+  const checkPasswordStrength = (password, fName, email) => {
+    // Check if password contains user's name or email
+    const sanitizedFName = DOMPurify.sanitize(fName || "").toLowerCase();
+    const sanitizedEmail = DOMPurify.sanitize(email || "").toLowerCase();
+    const sanitizedPassword = DOMPurify.sanitize(password || "").toLowerCase();
+
+    if (
+      (sanitizedFName && sanitizedPassword.includes(sanitizedFName)) ||
+      (sanitizedEmail && sanitizedPassword.includes(sanitizedEmail.split("@")[0]))
+    ) {
+      return {
+        score: 0,
+        label: "Invalid: Password cannot contain your name or email",
+        color: "bg-red-500",
+      };
+    }
+
     let score = 0;
     if (password.length >= 8) score += 1;
     if (password.length >= 12) score += 1;
@@ -63,44 +79,23 @@ function AuthPage() {
     return { score, label, color };
   };
 
-  const generatePassword = () => {
-    const chars =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
-    let password = "";
-    for (let i = 0; i < 12; i++) {
-      password += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    if (!/[A-Z]/.test(password)) password = password.slice(0, -1) + "A";
-    if (!/[a-z]/.test(password)) password = password.slice(0, -1) + "a";
-    if (!/[0-9]/.test(password)) password = password.slice(0, -1) + "1";
-    if (!/[^A-Za-z0-9]/.test(password)) password = password.slice(0, -1) + "@";
-    return password;
-  };
-
-  const handlePasswordFocus = () => {
-    if (activeTab === "signup") {
-      setSuggestedPassword(generatePassword());
-    }
-  };
-
-  const handleSuggestedPasswordClick = () => {
-    setSignUpFormData({ ...signUpFormData, password: suggestedPassword });
-    setSuggestedPassword("");
-  };
-
   useEffect(() => {
     if (activeTab === "signup" && signUpFormData.password) {
-      setPasswordStrength(checkPasswordStrength(signUpFormData.password));
+      setPasswordStrength(
+        checkPasswordStrength(
+          signUpFormData.password,
+          signUpFormData.fName,
+          signUpFormData.email
+        )
+      );
     } else {
       setPasswordStrength({ score: 0, label: "", color: "" });
-      setSuggestedPassword("");
     }
-  }, [signUpFormData.password, activeTab]);
+  }, [signUpFormData.password, signUpFormData.fName, signUpFormData.email, activeTab]);
 
   function handleTabChange(value) {
     setActiveTab(value);
-    setSuggestedPassword("");
-    setSuccessMessage(""); // Clear success message on tab change
+    setSuccessMessage("");
   }
 
   function checkIfSignInFormIsValid() {
@@ -119,6 +114,7 @@ function AuthPage() {
       signUpFormData.phone !== "" &&
       signUpFormData.password !== "" &&
       passwordStrength.score >= 3 &&
+      !passwordStrength.label.includes("Invalid") &&
       captchaToken
     );
   }
@@ -154,38 +150,35 @@ function AuthPage() {
     <div className="space-y-2">
       {signUpFormData.password && (
         <>
-          <div className="text-sm font-medium text-gray-700">
-            Password Strength: {passwordStrength.label}
-          </div>
-          <div className="w-full bg-gray-200 rounded-full h-2.5">
-            <div
-              className={`h-2.5 rounded-full ${passwordStrength.color}`}
-              style={{ width: `${(passwordStrength.score / 6) * 100}%` }}
-            ></div>
-          </div>
+          <div
+            className={`text-sm font-medium ${
+              passwordStrength.label.includes("Invalid")
+                ? "text-red-600"
+                : "text-gray-700"
+            }`}
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(`Password Strength: ${passwordStrength.label}`),
+            }}
+          />
+          {!passwordStrength.label.includes("Invalid") && (
+            <div className="w-full bg-gray-200 rounded-full h-2.5">
+              <div
+                className={`h-2.5 rounded-full ${passwordStrength.color}`}
+                style={{ width: `${(passwordStrength.score / 6) * 100}%` }}
+              ></div>
+            </div>
+          )}
         </>
-      )}
-      {suggestedPassword && (
-        <div className="text-sm text-gray-600">
-          Suggested Password:{" "}
-          <span
-            className="text-blue-600 cursor-pointer hover:underline"
-            onClick={handleSuggestedPasswordClick}
-          >
-            {suggestedPassword}
-          </span>
-        </div>
       )}
     </div>
   );
 
-  // Modified signup submit handler
   const handleSignUpSubmit = async (e) => {
     const result = await handleRegisterUser(e, captchaToken);
     if (result.success) {
       setSuccessMessage("Registration successful! Please sign in.");
-      setActiveTab("signin"); // Switch to signin tab
-      setCaptchaToken(null); // Reset CAPTCHA
+      setActiveTab("signin");
+      setCaptchaToken(null);
     } else {
       setSuccessMessage("Registration failed. Please try again.");
     }
@@ -222,7 +215,7 @@ function AuthPage() {
                   Verify OTP
                 </CardTitle>
                 <CardDescription className="text-gray-600">
-                  Enter the 6-digit OTP sent to your email to complete login.
+                  Enter the 6-digitOTP sent to your email to complete login.
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -288,7 +281,8 @@ function AuthPage() {
                     <CardDescription className="text-gray-600">
                       Enter your details to get started. Use a strong password
                       with at least 8 characters, including uppercase, lowercase,
-                      numbers, and special characters.
+                      numbers, and special characters. Password cannot contain
+                      your name or email.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -299,9 +293,10 @@ function AuthPage() {
                             ? "text-red-600"
                             : "text-green-600"
                         }`}
-                      >
-                        {successMessage}
-                      </div>
+                        dangerouslySetInnerHTML={{
+                          __html: DOMPurify.sanitize(successMessage),
+                        }}
+                      />
                     )}
                     <CommonForm
                       formControls={enhancedSignUpFormControls}
@@ -309,9 +304,8 @@ function AuthPage() {
                       formData={signUpFormData}
                       setFormData={setSignUpFormData}
                       isButtonDisabled={!checkIfSignUpFormIsValid()}
-                      handleSubmit={handleSignUpSubmit} // Use updated handler
+                      handleSubmit={handleSignUpSubmit}
                       customContent={passwordStrengthContent}
-                      onPasswordFocus={handlePasswordFocus}
                     />
                     <ReCAPTCHA
                       sitekey="6LdIKZMrAAAAAFcY_KH5cgOZV7IvLKvgVm9CE0d1"

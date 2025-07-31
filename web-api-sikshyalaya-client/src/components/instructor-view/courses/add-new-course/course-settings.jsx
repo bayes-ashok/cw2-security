@@ -7,7 +7,6 @@ import { mediaUploadService } from "@/services";
 import { Upload, Trash2 } from "lucide-react";
 import { useContext, useRef } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 function CourseSettings() {
   const {
@@ -28,6 +27,7 @@ function CourseSettings() {
       // Validate file type
       if (!selectedImage.type.startsWith("image/")) {
         toast.error("Cannot upload: Please select an image file.", {
+          toastId: "image-upload-error",
           position: "top-right",
           autoClose: 3000,
           hideProgressBar: false,
@@ -53,25 +53,16 @@ function CourseSettings() {
             image: response.data.url,
           });
           setMediaUploadProgress(false);
-          toast.success("Image uploaded successfully!", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          });
+          // Clear any existing toasts and show new one
+          toast.dismiss(); // Dismiss all previous toasts
         }
       } catch (e) {
         console.log(e);
-        toast.error("Error uploading image. Please try again.", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
+        toast.dismiss(); // Dismiss all previous toasts
+        
+      } finally {
+        // Reset file input to prevent re-triggering
+        event.target.value = "";
       }
     }
   }
@@ -102,9 +93,11 @@ function CourseSettings() {
                   className="rounded-lg shadow-xl border border-gray-300 w-[600px] h-[350px] object-cover"
                 />
                 <button
-                  onClick={() =>
-                    setCourseLandingFormData({ ...courseLandingFormData, image: "" })
-                  }
+                  onClick={() => {
+                    setCourseLandingFormData({ ...courseLandingFormData, image: "" });
+                    toast.dismiss(); // Clear any existing toasts
+
+                  }}
                   className="absolute top-2 right-2 flex items-center gap-1 px-3 py-1 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition duration-300"
                 >
                   <Trash2 className="w-4 h-4" />
@@ -132,7 +125,18 @@ function CourseSettings() {
             </div>
           )}
         </CardContent>
-        <ToastContainer />
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          limit={1} // Restrict to one toast at a time
+        />
       </Card>
     </div>
   );

@@ -1,0 +1,5 @@
+{"errors":[{"location":"body","msg":"Instructor ID is required","path":"instructorId","type":"field"},{"location":"body","msg":"Invalid instructor ID","path":"instructorId","type":"field"}],"level":"error","message":"Validation errors during course creation","timestamp":"2025-07-31T08:15:24.669Z"}
+{"errors":[{"location":"body","msg":"Instructor ID is required","path":"instructorId","type":"field"},{"location":"body","msg":"Invalid instructor ID","path":"instructorId","type":"field"}],"level":"error","message":"Validation errors during course creation","timestamp":"2025-07-31T08:27:04.783Z"}
+{"error":"Cannot read properties of undefined (reading 'id')","level":"error","message":"Error during course creation","timestamp":"2025-07-31T08:32:53.756Z"}
+{"error":"Cannot read properties of undefined (reading 'id')","level":"error","message":"Error during course creation","timestamp":"2025-07-31T08:33:14.673Z"}
+{"error":"Cannot read properties of undefined (reading '_id')","level":"error","message":"Error during course creation","timestamp":"2025-07-31T08:33:31.400Z"}

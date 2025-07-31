@@ -53,6 +53,7 @@ export async function fetchInstructorCourseListService() {
 }
 
 export async function addNewCourseService(formData) {
+  console.log(formData)
   const { data } = await axiosInstance.post(`/instructor/course/add`, formData);
 
   return data;

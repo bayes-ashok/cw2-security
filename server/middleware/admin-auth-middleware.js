@@ -26,7 +26,6 @@ const authenticateAdmin = async (req, res, next) => {
       id: payload._id,
       fName: payload.fName,
       email: payload.email,
-      role: payload.role,
       phone: payload.phone,
       image: payload.image
     };
