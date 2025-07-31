@@ -14,6 +14,8 @@ import {
 } from "@/services";
 import { Upload, Trash, FileVideo } from "lucide-react";
 import { useContext, useRef } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function CourseCurriculum() {
   const {
@@ -60,6 +62,19 @@ function CourseCurriculum() {
     const selectedFile = event.target.files[0];
 
     if (selectedFile) {
+      // Validate file type
+      if (!selectedFile.type.startsWith("video/")) {
+        toast.error("Cannot upload: Please select a video file.", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+        return;
+      }
+
       const videoFormData = new FormData();
       videoFormData.append("file", selectedFile);
 
@@ -78,9 +93,25 @@ function CourseCurriculum() {
           };
           setCourseCurriculumFormData(cpyCourseCurriculumFormData);
           setMediaUploadProgress(false);
+          toast.success("Video uploaded successfully!", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
         }
       } catch (error) {
         console.log(error);
+        toast.error("Error uploading video. Please try again.", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       }
     }
   }
@@ -102,6 +133,14 @@ function CourseCurriculum() {
       };
 
       setCourseCurriculumFormData(cpyCourseCurriculumFormData);
+      toast.success("Video replaced successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     }
   }
 
@@ -133,8 +172,24 @@ function CourseCurriculum() {
 
   async function handleMediaBulkUpload(event) {
     const selectedFiles = Array.from(event.target.files);
-    const bulkFormData = new FormData();
 
+    // Validate all files are videos
+    const nonVideoFiles = selectedFiles.filter(
+      (file) => !file.type.startsWith("video/")
+    );
+    if (nonVideoFiles.length > 0) {
+      toast.error("Cannot upload: Please select only video files.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      return;
+    }
+
+    const bulkFormData = new FormData();
     selectedFiles.forEach((fileItem) => bulkFormData.append("files", fileItem));
 
     try {
@@ -144,7 +199,6 @@ function CourseCurriculum() {
         setMediaUploadProgressPercentage
       );
 
-      console.log(response, "bulk");
       if (response?.success) {
         let cpyCourseCurriculumFormdata =
           areAllCourseCurriculumFormDataObjectsEmpty(courseCurriculumFormData)
@@ -164,9 +218,25 @@ function CourseCurriculum() {
         ];
         setCourseCurriculumFormData(cpyCourseCurriculumFormdata);
         setMediaUploadProgress(false);
+        toast.success("Videos uploaded successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       }
     } catch (e) {
       console.log(e);
+      toast.error("Error uploading videos. Please try again.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     }
   }
 
@@ -183,6 +253,14 @@ function CourseCurriculum() {
       );
 
       setCourseCurriculumFormData(cpyCourseCurriculumFormData);
+      toast.success("Lecture deleted successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     }
   }
 
@@ -206,7 +284,7 @@ function CourseCurriculum() {
             as="label"
             htmlFor="bulk-media-upload"
             variant="outline"
-            className="cursor-pointer flex items-center gap-2 px-5 py-3 border rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold hover:from-blue-600 hover:to-blue-800 transition-shadow shadow-md hiver:text-white"
+            className="cursor-pointer flex items-center gap-2 px-5 py-3 border rounded-lg bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold hover:from-blue-600 hover:to-blue-800 transition-shadow shadow-md hover:text-white"
             onClick={handleOpenBulkUploadDialog}
           >
             <Upload className="w-5 h-5" />
@@ -295,7 +373,6 @@ function CourseCurriculum() {
                   </div>
                 ) : (
                   <div className="flex flex-col">
-                    {/* Improved File Input for Better UI */}
                     <label
                       htmlFor={`video-upload-${index}`}
                       className="flex items-center justify-center w-full px-4 py-3 text-blue-800 bg-blue-100 rounded-lg cursor-pointer hover:bg-blue-200"
@@ -319,6 +396,7 @@ function CourseCurriculum() {
           ))}
         </div>
       </CardContent>
+      <ToastContainer />
     </Card>
   );
 }
