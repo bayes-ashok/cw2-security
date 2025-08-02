@@ -11,18 +11,26 @@ const addNewCourse = [
     .notEmpty().withMessage('Course title is required')
     .isLength({ min: 3 }).withMessage('Course title must be at least 3 characters long')
     .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+
   body('description')
     .optional()
     .trim()
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: ['p', 'b', 'i', 'ul', 'li'], allowedAttributes: {} })),
+    .customSanitizer((value) =>
+      sanitizeHtml(value, { allowedTags: ['p', 'b', 'i', 'ul', 'li'], allowedAttributes: {} })
+    ),
+
   body('instructorId')
-    .notEmpty().withMessage('Instructor ID is required')
-    .isMongoId().withMessage('Invalid instructor ID')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+    .optional()
+    .customSanitizer((value) =>
+      sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })
+    ),
+
   body('price')
     .optional()
     .isFloat({ min: 0 }).withMessage('Price must be a positive number')
-    .customSanitizer((value) => sanitizeHtml(value.toString(), { allowedTags: [], allowedAttributes: {} })),
+    .customSanitizer((value) =>
+      sanitizeHtml(value.toString(), { allowedTags: [], allowedAttributes: {} })
+    ),
 
   // Controller logic
   async (req, res) => {
@@ -34,16 +42,28 @@ const addNewCourse = [
 
     try {
       const courseData = req.body;
-      const instructor = await User.findById(courseData.instructorId);
-      if (!instructor) {
-        logger.warn('Instructor not found during course creation', { instructorId: courseData.instructorId });
-        return res.status(404).json({
-          success: false,
-          message: "Instructor not found",
-        });
+
+      if (!courseData.instructorId) {
+        // ✅ Use the fixed fallback instructor ID
+        courseData.instructorId = "688dfd2f739f3f4746f2631c";
+
+        // Fetch the default instructor to set name
+        const defaultInstructor = await User.findById(courseData.instructorId);
+        courseData.instructorName = defaultInstructor
+          ? sanitizeHtml(defaultInstructor.fName, { allowedTags: [], allowedAttributes: {} })
+          : "Default Instructor";
+      } else {
+        const instructor = await User.findById(courseData.instructorId);
+        if (!instructor) {
+          logger.warn('Instructor not found during course creation', { instructorId: courseData.instructorId });
+          return res.status(404).json({
+            success: false,
+            message: "Instructor not found",
+          });
+        }
+        courseData.instructorName = sanitizeHtml(instructor.fName, { allowedTags: [], allowedAttributes: {} });
       }
 
-      courseData.instructorName = sanitizeHtml(instructor.fName, { allowedTags: [], allowedAttributes: {} });
       const newlyCreatedCourse = new Course(courseData);
       const savedCourse = await newlyCreatedCourse.save();
       logger.info('Course created successfully', { courseId: savedCourse._id, title: savedCourse.title });

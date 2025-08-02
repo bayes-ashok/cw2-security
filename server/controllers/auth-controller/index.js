@@ -135,7 +135,7 @@ const registerUser = [
       await newUser.save();
       logger.info('User registered successfully', { email, fName });
 
-      const verificationLink = `https://localhost:443/auth/verify-email?token=${verificationToken}`;
+      const verificationLink = `https://192.168.1.72:443/auth/verify-email?token=${verificationToken}`;
       const mailOptions = {
         from: process.env.EMAIL_USER,
         to: email,
@@ -213,7 +213,7 @@ const loginUser = [
 
     const { email, password } = req.body;
     const LOCK_TIME = 5 * 60 * 1000; // 5 minutes in ms
-    const MAX_ATTEMPTS = 5;
+    const MAX_ATTEMPTS = 10;
     const ONE_MONTH = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 
     try {
@@ -431,30 +431,27 @@ const updateUserDetails = [
     .trim()
     .isLength({ min: 2 }).withMessage('First name must be at least 2 characters long')
     .customSanitizer((value) => xss(value)),
+
   body('phone')
     .optional()
     .isMobilePhone().withMessage('Please provide a valid phone number')
     .customSanitizer((value) => xss(value)),
+
+  // Password now only sanitized here, strength check will be done later
   body('password')
     .optional()
-    .custom((value, { req }) => {
-      if (!value) return true;
-      const fName = req.body.fName || req.user.fName;
-      const { score, message } = checkPasswordStrength(value, fName, req.user.email);
-      if (score < 3) {
-        throw new Error(message);
-      }
-      return true;
-    })
     .customSanitizer((value) => xss(value)),
+
   body('currentPassword')
     .if(body('password').exists())
     .notEmpty().withMessage('Current password is required')
     .customSanitizer((value) => xss(value)),
+
   body('role')
     .optional()
-    .isIn(['user']).withMessage('Role must be either user')
+    .isIn(['user']).withMessage('Role must be user')
     .customSanitizer((value) => xss(value)),
+
   body('twoFactorEnabled')
     .optional()
     .isBoolean().withMessage('Two-factor enabled must be a boolean'),
@@ -475,6 +472,7 @@ const updateUserDetails = [
       const userId = req.user.id;
       const { fName, phone, image, password, currentPassword, twoFactorEnabled } = req.body;
       const role = 'user';
+
       const user = await User.findById(userId);
       if (!user) {
         logger.warn('User not found during update', { userId });
@@ -492,27 +490,40 @@ const updateUserDetails = [
           logger.warn('Incorrect current password during user update', { userId });
           return res.status(401).json({ success: false, message: "Incorrect current password" });
         }
+
+        // ✅ Perform password strength check here with actual user email and fName
+        const fNameToUse = fName || user.fName;
+        const { score, message } = checkPasswordStrength(password, fNameToUse, user.email);
+        if (score < 3) {
+          logger.warn('Weak password attempted during update', { userId });
+          return res.status(400).json({ success: false, message });
+        }
       }
 
       let updateFields = {};
       if (fName) updateFields.fName = xss(fName);
       if (phone) updateFields.phone = xss(phone);
       if (image) updateFields.image = xss(image);
+
       if (password) {
         const hashedNewPassword = await bcrypt.hash(password, 10);
+
+        // ✅ Prevent reuse of last 5 passwords
         for (const prevPassword of user.prevPasswords) {
           if (await bcrypt.compare(password, prevPassword)) {
             logger.warn('New password matches a previous password', { userId });
             return res.status(400).json({
               success: false,
-              message: "This password is already used. Please try new password.",
+              message: "This password is already used. Please try a new password.",
             });
           }
         }
+
         updateFields.password = hashedNewPassword;
         updateFields.prevPasswords = [...user.prevPasswords, user.password].slice(-5);
         updateFields.lastPasswordChange = Date.now();
       }
+
       if (twoFactorEnabled !== undefined) {
         updateFields.twoFactorEnabled = twoFactorEnabled;
       }
@@ -535,6 +546,7 @@ const updateUserDetails = [
     }
   }
 ];
+
 
 const getUserDetails = async (req, res) => {
   try {

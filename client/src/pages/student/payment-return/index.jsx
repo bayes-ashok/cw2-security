@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -10,6 +8,14 @@ const PaymentReturnPage = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+
+    // ✅ Read token from return_url
+    const token = params.get("token");
+    if (token) {
+      console.log("✅ Restored token from URL:", token);
+      localStorage.setItem("accessToken", JSON.stringify(token)); // or sessionStorage if you prefer
+    }
+
     const pidx = params.get("pidx");
     const status = params.get("status");
     const transactionId = params.get("transaction_id");
@@ -19,14 +25,14 @@ const PaymentReturnPage = () => {
     const purchaseOrderName = params.get("purchase_order_name");
     const totalAmount = params.get("total_amount");
 
-    console.log("Payment callback parameters:", params);
+    console.log("Payment callback parameters:", Object.fromEntries(params.entries()));
 
     setLoading(true);
     setError(null);
 
     if (status === "Completed") {
       setPaymentStatus("Payment was successful");
-      verifyPayment(transactionId); // Add verification logic here
+      verifyPayment(transactionId);
       window.location.href = "/student-courses";
     } else if (status === "User canceled") {
       setPaymentStatus("Payment was canceled by the user");
@@ -41,10 +47,16 @@ const PaymentReturnPage = () => {
 
   const verifyPayment = async (transactionId) => {
     try {
+      const accessToken = JSON.parse(localStorage.getItem("accessToken")) || "";
+
       const response = await axios.post(
         "https://localhost:443/student/order/verify-payment",
+        { transactionId },
         {
-          transactionId, // Send the transactionId to the backend
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
         }
       );
 
@@ -68,9 +80,7 @@ const PaymentReturnPage = () => {
     try {
       const response = await axios.post(
         "https://khalti.com/api/epayment/lookup/",
-        {
-          pidx: pidx,
-        },
+        { pidx },
         {
           headers: {
             "Content-Type": "application/json",

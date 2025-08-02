@@ -9,10 +9,10 @@ const {
 const authenticateAdmin = require("../../middleware/admin-auth-middleware");
 const router = express.Router();
 
-router.post("/add", addNewCourse);
-router.get("/get", getAllCourses);
-router.get("/get/details/:id", getCourseDetailsByID);
-router.put("/update/:id", updateCourseByID);
-router.delete("/delete/:id", deleteCourseByID);
+router.post("/add", authenticateAdmin, addNewCourse);
+router.get("/get", authenticateAdmin, getAllCourses);
+router.get("/get/details/:id",authenticateAdmin, getCourseDetailsByID);
+router.put("/update/:id", authenticateAdmin, updateCourseByID);
+router.delete("/delete/:id", authenticateAdmin, deleteCourseByID);
 
 module.exports = router;

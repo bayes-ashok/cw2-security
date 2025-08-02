@@ -3,10 +3,11 @@ require("dotenv").config();
 
 //configure with env data
 cloudinary.config({
-  cloud_name: "dzyebdugr",
-  api_key: "557937621392681",
-  api_secret: "-7Hb-IHwTxS-eSjbS0qwaH89AEc",
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
 
 const uploadMediaToCloudinary = async (filePath) => {
   try {

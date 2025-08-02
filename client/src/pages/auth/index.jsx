@@ -12,7 +12,11 @@ import {
 } from "@/components/ui/card";
 import ReCAPTCHA from "react-google-recaptcha";
 import CommonForm from "@/components/common-form";
-import { signInFormControls, signUpFormControls, otpFormControls } from "@/config";
+import {
+  signInFormControls,
+  signUpFormControls,
+  otpFormControls,
+} from "@/config";
 import DOMPurify from "dompurify";
 
 function AuthPage() {
@@ -48,7 +52,8 @@ function AuthPage() {
 
     if (
       (sanitizedFName && sanitizedPassword.includes(sanitizedFName)) ||
-      (sanitizedEmail && sanitizedPassword.includes(sanitizedEmail.split("@")[0]))
+      (sanitizedEmail &&
+        sanitizedPassword.includes(sanitizedEmail.split("@")[0]))
     ) {
       return {
         score: 0,
@@ -91,7 +96,12 @@ function AuthPage() {
     } else {
       setPasswordStrength({ score: 0, label: "", color: "" });
     }
-  }, [signUpFormData.password, signUpFormData.fName, signUpFormData.email, activeTab]);
+  }, [
+    signUpFormData.password,
+    signUpFormData.fName,
+    signUpFormData.email,
+    activeTab,
+  ]);
 
   function handleTabChange(value) {
     setActiveTab(value);
@@ -120,7 +130,9 @@ function AuthPage() {
   }
 
   function checkIfOtpFormIsValid() {
-    return otpFormData && otpFormData.otp !== "" && otpFormData.otp.length === 6;
+    return (
+      otpFormData && otpFormData.otp !== "" && otpFormData.otp.length === 6
+    );
   }
 
   const enhancedSignInFormControls = signInFormControls.map((control) => {
@@ -157,7 +169,9 @@ function AuthPage() {
                 : "text-gray-700"
             }`}
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(`Password Strength: ${passwordStrength.label}`),
+              __html: DOMPurify.sanitize(
+                `Password Strength: ${passwordStrength.label}`
+              ),
             }}
           />
           {!passwordStrength.label.includes("Invalid") && (
@@ -280,9 +294,9 @@ function AuthPage() {
                     </CardTitle>
                     <CardDescription className="text-gray-600">
                       Enter your details to get started. Use a strong password
-                      with at least 8 characters, including uppercase, lowercase,
-                      numbers, and special characters. Password cannot contain
-                      your name or email.
+                      with at least 8 characters, including uppercase,
+                      lowercase, numbers, and special characters. Password
+                      cannot contain your name or email.
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -308,7 +322,7 @@ function AuthPage() {
                       customContent={passwordStrengthContent}
                     />
                     <ReCAPTCHA
-                      sitekey="6LdIKZMrAAAAAFcY_KH5cgOZV7IvLKvgVm9CE0d1"
+                      sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
                       onChange={(token) => {
                         console.log("reCAPTCHA token:", token);
                         setCaptchaToken(token);

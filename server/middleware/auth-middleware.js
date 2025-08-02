@@ -19,12 +19,12 @@ const authenticate = (req, res, next) => {
 
   try {
     const payload = verifyToken(token, process.env.JWT_SECRET_KEY);
+    console.log("✅ Decoded JWT Payload:", payload);
 
  req.user = {
       id: payload._id,        
       fName: payload.fName,
       email: payload.email,
-      role: payload.role,
       phone: payload.phone,
       image: payload.image
     };

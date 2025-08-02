@@ -75,7 +75,6 @@ function StudentViewCourseDetailsPage() {
       courseImage: studentViewCourseDetails?.image,
       courseTitle: studentViewCourseDetails?.title,
       courseId: studentViewCourseDetails?._id,
-      coursePricing: studentViewCourseDetails?.pricing,
     };
 
     console.log(paymentPayload, "paymentPayload");
@@ -281,11 +280,12 @@ function StudentViewCourseDetailsPage() {
                       JSON.parse(sessionStorage.getItem("accessToken")) || "";
 
                     const response = await axios.post(
-                      "https://localhost:443/student/order/create-khalti",
+                      "https://192.168.1.72:443/student/order/create-khalti",
                       paymentPayload,
                       {
                         headers: {
                           Authorization: `Bearer ${accessToken}`,
+                          "Content-Type": "application/json",
                         },
                       }
                     );
@@ -297,7 +297,6 @@ function StudentViewCourseDetailsPage() {
                     }
                   } catch (error) {
                     console.error(error);
-                    alert(error);
                   }
                 }}
                 className="w-auto h-auto mx-auto flex"

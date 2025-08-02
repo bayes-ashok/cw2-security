@@ -14,7 +14,7 @@ const UpdateProfile = () => {
   const [loading, setLoading] = useState(false);
 
   const axiosConfig = {
-    baseURL: 'https://localhost:443',
+    baseURL: 'https://192.168.1.72:443',
     headers: {
       Authorization: `Bearer ${JSON.parse(sessionStorage.getItem('accessToken')) || ''}`
     }

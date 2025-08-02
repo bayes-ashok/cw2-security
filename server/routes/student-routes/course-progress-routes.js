@@ -5,10 +5,11 @@ const {
   resetCurrentCourseProgress,
 } = require("../../controllers/student-controller/course-progress-controller");
 const authenticateMiddleware = require("../../middleware/auth-middleware");
+const authenticate = require("../../middleware/auth-middleware");
 
 const router = express.Router();
 
-router.get("/get/:userId/:courseId", authenticateMiddleware, getCurrentCourseProgress);
-router.post("/mark-lecture-viewed", authenticateMiddleware, markCurrentLectureAsViewed);
-router.post("/reset-progress", authenticateMiddleware, resetCurrentCourseProgress);
+router.get("/get/:userId/:courseId",authenticate, getCurrentCourseProgress);
+router.post("/mark-lecture-viewed", authenticate, markCurrentLectureAsViewed);
+router.post("/reset-progress", authenticate, resetCurrentCourseProgress);
 module.exports = router;

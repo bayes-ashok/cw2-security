@@ -102,6 +102,7 @@ const getAllCourseTitles = async (req, res) => {
   }
 };
 
+
 const getStudentViewCourseDetails = [
   // Validation rules
   param('id')
@@ -129,11 +130,19 @@ const getStudentViewCourseDetails = [
         });
       }
 
+      // Filter curriculum to include only freePreview: true videos
+      const sanitizedCourseDetails = {
+        ...courseDetails._doc,
+        curriculum: courseDetails.curriculum.filter(lecture => lecture.freePreview === true)
+      };
+
       logger.info('Course details retrieved successfully', { courseId: id, title: courseDetails.title });
+
       res.status(200).json({
         success: true,
-        data: courseDetails,
+        data: sanitizedCourseDetails,
       });
+
     } catch (error) {
       logger.error('Error retrieving course details', { error: error.message });
       res.status(500).json({

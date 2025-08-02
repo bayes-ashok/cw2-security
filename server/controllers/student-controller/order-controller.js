@@ -290,56 +290,59 @@ const capturePaymentAndFinalizeOrder = [
 ];
 
 let globalOrderDetails = {};
-
 const createKhaltiOrder = [
-  // Validation rules
-  body('userId')
-    .notEmpty().withMessage('User ID is required')
-    .isMongoId().withMessage('Invalid user ID')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+  // ✅ Removed userId validation
+
   body('orderStatus')
     .notEmpty().withMessage('Order status is required')
     .isIn(['pending', 'confirmed']).withMessage('Invalid order status')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+    .customSanitizer((value) => sanitizeHtml(value ? String(value) : '', { allowedTags: [], allowedAttributes: {} })),
+
   body('paymentMethod')
     .notEmpty().withMessage('Payment method is required')
     .isIn(['khalti']).withMessage('Invalid payment method')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+    .customSanitizer((value) => sanitizeHtml(value ? String(value) : '', { allowedTags: [], allowedAttributes: {} })),
+
   body('paymentStatus')
     .notEmpty().withMessage('Payment status is required')
     .isIn(['pending', 'paid', 'initiated']).withMessage('Invalid payment status')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+    .customSanitizer((value) => sanitizeHtml(value ? String(value) : '', { allowedTags: [], allowedAttributes: {} })),
+
   body('orderDate')
     .notEmpty().withMessage('Order date is required')
     .isISO8601().withMessage('Invalid date format')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
-  body('paymentId')
-    .optional()
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
-  body('payerId')
-    .optional()
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+    .customSanitizer((value) => sanitizeHtml(value ? String(value) : '', { allowedTags: [], allowedAttributes: {} })),
+
+  body('paymentId').optional()
+    .customSanitizer((value) => sanitizeHtml(value ? String(value) : '', { allowedTags: [], allowedAttributes: {} })),
+
+  body('payerId').optional()
+    .customSanitizer((value) => sanitizeHtml(value ? String(value) : '', { allowedTags: [], allowedAttributes: {} })),
+
   body('instructorId')
     .notEmpty().withMessage('Instructor ID is required')
     .isMongoId().withMessage('Invalid instructor ID')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+    .customSanitizer((value) => sanitizeHtml(value ? String(value) : '', { allowedTags: [], allowedAttributes: {} })),
+
   body('instructorName')
     .trim()
     .notEmpty().withMessage('Instructor name is required')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
-  body('courseImage')
-    .optional()
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+    .customSanitizer((value) => sanitizeHtml(value ? String(value) : '', { allowedTags: [], allowedAttributes: {} })),
+
+  body('courseImage').optional()
+    .customSanitizer((value) => sanitizeHtml(value ? String(value) : '', { allowedTags: [], allowedAttributes: {} })),
+
   body('courseTitle')
     .trim()
     .notEmpty().withMessage('Course title is required')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+    .customSanitizer((value) => sanitizeHtml(value ? String(value) : '', { allowedTags: [], allowedAttributes: {} })),
+
   body('courseId')
     .notEmpty().withMessage('Course ID is required')
     .isMongoId().withMessage('Invalid course ID')
-    .customSanitizer((value) => sanitizeHtml(value, { allowedTags: [], allowedAttributes: {} })),
+    .customSanitizer((value) => sanitizeHtml(value ? String(value) : '', { allowedTags: [], allowedAttributes: {} })),
 
-  // Controller logic
+  // ✅ Controller logic
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -348,8 +351,11 @@ const createKhaltiOrder = [
     }
 
     try {
+      // ✅ Get userId from token
+      const userId = req.user.id;
+      console.log("✅ User ID from token:", userId);
+
       const {
-        userId,
         orderStatus,
         paymentMethod,
         paymentStatus,
@@ -363,77 +369,61 @@ const createKhaltiOrder = [
         courseId,
       } = req.body;
 
-      // Fetch user data
+      console.log("📌 Request Body:", req.body);
+
+      // ✅ Fetch user
       const user = await User.findById(userId).select('fName email phone');
+      console.log("👤 User fetched:", user);
+
       if (!user) {
-        logger.warn('User not found during Khalti order creation', { userId });
-        return res.status(404).json({
-          success: false,
-          message: 'User not found',
-        });
-      }
-      if (!user.fName || !user.email) {
-        logger.warn('Missing required user fields', { userId, fName: user.fName, email: user.email });
-        return res.status(400).json({
-          success: false,
-          message: 'User missing required fields: first name or email',
-        });
+        return res.status(404).json({ success: false, message: "User not found" });
       }
 
-      const fName = user.fName;
-      const email = user.email;
-      const phone = user.phone || '9800000001'; // Fallback phone number
-
-      // Fetch course pricing
+      // ✅ Fetch course
       const course = await Course.findById(courseId).select('pricing');
+      console.log("📚 Course fetched:", course);
+
       if (!course) {
-        logger.warn('Course not found during Khalti order creation', { courseId });
-        return res.status(404).json({
-          success: false,
-          message: 'Course not found',
-        });
+        return res.status(404).json({ success: false, message: "Course not found" });
       }
 
-      const coursePricing = course.pricing;
-      if (!coursePricing || coursePricing < 0) {
-        logger.warn('Invalid course pricing', { courseId, pricing: coursePricing });
-        return res.status(400).json({
-          success: false,
-          message: 'Invalid or missing course pricing',
-        });
-      }
+      const coursePricin = parseInt(course.pricing * 100);
+      console.log("💰 Course Pricing (paisa):", coursePricin);
 
-      const coursePricin = coursePricing * 100;
-      const coursePricingStr = String(coursePricin);
+      // ✅ Prepare Khalti request
+      const khaltiPayload = {
+        return_url: "https://localhost:5173/payment-return?token=${accessToken}",
+        website_url: "https://localhost:5173",
+        amount: coursePricin,
+        purchase_order_id: `order_${userId}_${Date.now()}`,
+        purchase_order_name: "Course Payment",
+        customer_info: {
+          name: user.fName,
+          email: user.email,
+          phone: user.phone,
+        },
+      };
+
+      console.log("📤 Khalti Payload:", khaltiPayload);
 
       const response = await axios.post(
         "https://dev.khalti.com/api/v2/epayment/initiate/",
-        {
-          return_url: "https://localhost:5173/payment-return",
-          website_url: "https://localhost:5173",
-          amount: coursePricingStr,
-          purchase_order_id: `order_${userId}_${Date.now()}`,
-          purchase_order_name: "Course Payment",
-          customer_info: {
-            name: fName,
-            email,
-            phone,
-          },
-        },
+        khaltiPayload,
         {
           headers: {
-            Authorization: 'key 41786720168241bb94f45448c2b5f4fb',
+            Authorization: `key ${process.env.AUTH_KEY}`,
             'Content-Type': 'application/json',
           },
         }
       );
 
+      console.log("📥 Khalti Response:", response.data);
+
       if (response.data.payment_url) {
         globalOrderDetails = {
           userId,
-          fName,
-          email,
-          phone,
+          fName: user.fName,
+          email: user.email,
           orderStatus,
           paymentMethod,
           paymentStatus,
@@ -445,7 +435,7 @@ const createKhaltiOrder = [
           courseImage,
           courseTitle,
           courseId,
-          coursePricing,
+          coursePricing: course.pricing,
         };
         logger.info('Khalti order initiated', { transactionId: response.data.transaction_id, courseId });
 
@@ -458,7 +448,10 @@ const createKhaltiOrder = [
         res.status(500).json({ success: false, message: "Failed to get payment URL" });
       }
     } catch (error) {
-      logger.error('Error during Khalti order creation', { error: error.message });
+      console.error("❌ Khalti Error:", error.message);
+      if (error.response) {
+        console.error("❌ Khalti Response Data:", error.response.data);
+      }
       res.status(500).json({
         success: false,
         message: "Internal server error",
@@ -467,6 +460,7 @@ const createKhaltiOrder = [
     }
   }
 ];
+
 
 const verifyPayment = [
   // Validation rules

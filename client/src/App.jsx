@@ -32,6 +32,8 @@ function App() {
           />
         }
       />
+      <Route path="/payment-return" element={<PaymentReturnPage />} />
+      <Route path="/paypal-return" element={<PaypalPaymentReturnPage />} />
       <Route
         path="/instructor"
         element={
@@ -92,7 +94,6 @@ function App() {
           element={<StudentViewCourseDetailsPage />}
         />
 
-        <Route path="payment-return" element={<PaymentReturnPage />} />
         <Route path="paypal-return" element={<PaypalPaymentReturnPage />} />
         <Route path="student-courses" element={<StudentCoursesPage />} />
         <Route path="profile" element={<UpdateProfile />} />

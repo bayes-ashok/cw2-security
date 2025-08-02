@@ -20,7 +20,7 @@ export default defineConfig({
           stringArray: true,
           rotateStringArray: true,
           disableConsoleOutput: true
-        }, ['**/*.css']) // don't obfuscate CSS
+        }, ['**/*.css']) 
       ]
     }
   },
@@ -29,6 +29,7 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  
   server: {
         host: "0.0.0.0",  // ✅ allow access from any IP
 

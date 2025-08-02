@@ -18,7 +18,10 @@ const studentCoursesRoutes = require("./routes/student-routes/student-courses-ro
 const studentCourseProgressRoutes = require("./routes/student-routes/course-progress-routes");
 
 const app = express();
-const PORT = 443; // Use HTTPS port
+
+// ✅ Environment Variables
+const PORT = process.env.SERVER_PORT || 443;
+const HOST = process.env.SERVER_HOST || "0.0.0.0";
 const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/shikshyalaya-server";
 
 // ✅ Logger
@@ -49,9 +52,9 @@ if (process.env.NODE_ENV !== "test") {
 // Disabled x-powered-by header to prevent exposing server technology
 app.disable("x-powered-by");
 
-// CORS
+// ✅ CORS
 app.use(cors({
-  origin: ["https://localhost:5173", "https://192.168.1.72:5173"],
+  origin: [process.env.CLIENT_URL, "https://192.168.1.72:5173"],
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
@@ -59,7 +62,7 @@ app.use(cors({
 
 app.use(express.json());
 
-// Helmet with strict CSP
+// ✅ Helmet with strict CSP
 app.use(
   helmet({
     crossOriginEmbedderPolicy: false,
@@ -83,7 +86,7 @@ app.use(
   })
 );
 
-// Extra Security Headers
+// ✅ Extra Security Headers
 app.use(helmet.referrerPolicy({ policy: "no-referrer" }));
 app.use(helmet.frameguard({ action: "deny" }));
 
@@ -130,10 +133,8 @@ const sslOptions = {
   cert: fs.readFileSync(path.join(__dirname, "ssl", "cert.pem")),
 };
 
-server = https.createServer(sslOptions, app).listen(PORT, "192.168.1.72", () => {
-  logger.info(`✅ HTTPS server running on https://192.168.1.72:${PORT}`);
+const server = https.createServer(sslOptions, app).listen(PORT, HOST, () => {
+  logger.info(`✅ HTTPS server running on https://${HOST}:${PORT}`);
 });
-
-
 
 module.exports = { app, server, connectDB, validateRequest };
