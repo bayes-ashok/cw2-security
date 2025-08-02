@@ -24,3 +24,131 @@
 {"courseId":"688b2b86076f73d0c1b65de5","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T08:39:22.867Z","title":"asdfg"}
 {"level":"info","message":"User details fetched successfully","timestamp":"2025-07-31T08:39:29.325Z","userId":"6889dffacc65bb812e165c45"}
 {"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T08:39:32.980Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-31T10:32:28.210Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T10:32:28.289Z"}
+{"email":"ashok111210@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-31T10:33:20.160Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T10:33:20.189Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-31T10:33:41.528Z","userId":"6889dffacc65bb812e165c45"}
+{"email":"ashok111210@gmail.com","level":"info","message":"User details updated successfully","timestamp":"2025-07-31T10:34:14.942Z","userId":"6889dffacc65bb812e165c45"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T10:34:23.775Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-31T10:34:25.332Z","userId":"6889dffacc65bb812e165c45"}
+{"level":"warn","message":"Incorrect current password during user update","timestamp":"2025-07-31T10:36:03.051Z","userId":"6889dffacc65bb812e165c45"}
+{"email":"ashok111210@gmail.com","level":"info","message":"User details updated successfully","timestamp":"2025-07-31T10:36:16.447Z","userId":"6889dffacc65bb812e165c45"}
+{"level":"warn","message":"New password matches a previous password","timestamp":"2025-07-31T10:38:00.066Z","userId":"6889dffacc65bb812e165c45"}
+{"email":"bayesashok@gmail.com","fName":"John Cena","level":"info","message":"User registered successfully","timestamp":"2025-07-31T10:44:43.563Z"}
+{"email":"bayesashok@gmail.com","level":"info","message":"Verification email sent","timestamp":"2025-07-31T10:44:47.357Z"}
+{"level":"warn","message":"Invalid verification token","timestamp":"2025-07-31T10:45:37.215Z","token":"bdf455159da9ea1f15801dabae5d7d2bef4e467ebcb05d6eb4b655400db3b0ce"}
+{"level":"warn","message":"Invalid verification token","timestamp":"2025-07-31T10:46:55.065Z","token":"bdf455159da9ea1f15801dabae5d7d2bef4e467ebcb05d6eb4b655400db3b0ce"}
+{"level":"warn","message":"Invalid verification token","timestamp":"2025-07-31T10:49:23.336Z","token":"bdf455159da9ea1f15801dabae5d7d2bef4e467ebcb05d6eb4b655400db3b0ce"}
+{"level":"warn","message":"Invalid verification token","timestamp":"2025-07-31T10:49:59.178Z","token":"bdf455159da9ea1f15801dabae5d7d2bef4e467ebcb05d6eb4b655400db3b0ce"}
+{"level":"warn","message":"Invalid or expired verification token","timestamp":"2025-07-31T10:52:36.131Z","token":"bdf455159da9ea1f15801dabae5d7d2bef4e467ebcb05d6eb4b655400db3b0ce"}
+{"email":"bayesashok@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-31T11:03:14.659Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T11:03:14.718Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-31T11:03:41.998Z","userId":"688b491be8e10978aff3c242"}
+{"email":"bayesashok@gmail.com","level":"info","message":"User details updated successfully","timestamp":"2025-07-31T11:05:37.710Z","userId":"688b491be8e10978aff3c242"}
+{"email":"bayesashok@gmail.com","level":"info","message":"OTP sent to user","timestamp":"2025-07-31T11:06:01.148Z"}
+{"email":"bayesashok@gmail.com","level":"info","message":"OTP verified and user logged in successfully","timestamp":"2025-07-31T11:07:34.775Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T11:07:34.810Z"}
+{"email":"bayesashok@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-31T11:08:33.788Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T11:08:33.817Z"}
+{"courseId":"688b2b86076f73d0c1b65de5","level":"warn","message":"Student course record not found","studentId":"688b491be8e10978aff3c242","timestamp":"2025-07-31T11:09:15.141Z"}
+{"courseId":"688b2b86076f73d0c1b65de5","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T11:09:15.165Z","title":"asdfg"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T11:09:17.715Z"}
+{"courseId":"67c553783964626e20f05567","level":"warn","message":"Student course record not found","studentId":"688b491be8e10978aff3c242","timestamp":"2025-07-31T11:09:19.708Z"}
+{"courseId":"688b2b86076f73d0c1b65de5","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T11:09:19.743Z","title":"asdfg"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T11:09:19.762Z","title":"Professional English for MOFA Officers"}
+{"email":"bayesashok@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-31T11:11:55.145Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T11:11:55.190Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T11:11:58.237Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T11:11:58.265Z"}
+{"courseId":"67c553783964626e20f05567","level":"warn","message":"Student course record not found","studentId":"688b491be8e10978aff3c242","timestamp":"2025-07-31T11:11:59.541Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T11:11:59.574Z","title":"Professional English for MOFA Officers"}
+{"error":"Request failed with status code 504","level":"error","message":"Error during Khalti order creation","timestamp":"2025-07-31T11:12:26.137Z"}
+{"error":"Request failed with status code 504","level":"error","message":"Error during Khalti order creation","timestamp":"2025-07-31T11:12:30.056Z"}
+{"error":"Request failed with status code 503","level":"error","message":"Error during Khalti order creation","timestamp":"2025-07-31T11:12:39.967Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Khalti order initiated","timestamp":"2025-07-31T11:12:44.192Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T11:13:11.086Z","title":"Professional English for MOFA Officers"}
+{"errors":[{"location":"body","msg":"User ID is required","path":"userId","type":"field"},{"location":"body","msg":"Invalid user ID","path":"userId","type":"field"}],"level":"error","message":"Validation errors during Khalti order creation","timestamp":"2025-07-31T11:13:13.038Z"}
+{"email":"bayesashok@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-31T11:18:31.288Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T11:21:32.861Z","title":"Professional English for MOFA Officers"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T11:24:10.673Z","title":"Professional English for MOFA Officers"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T11:24:32.175Z","title":"Professional English for MOFA Officers"}
+{"errors":[{"location":"body","msg":"User ID is required","path":"userId","type":"field"},{"location":"body","msg":"Invalid user ID","path":"userId","type":"field"}],"level":"error","message":"Validation errors during Khalti order creation","timestamp":"2025-07-31T11:25:06.868Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T11:27:04.550Z","title":"Professional English for MOFA Officers"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T11:27:09.948Z","title":"Professional English for MOFA Officers"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T11:29:48.191Z","title":"Professional English for MOFA Officers"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T11:29:54.539Z","title":"Professional English for MOFA Officers"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T11:30:06.557Z","title":"Professional English for MOFA Officers"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T11:30:15.281Z","title":"Professional English for MOFA Officers"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T11:31:15.359Z","title":"Professional English for MOFA Officers"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T11:33:47.607Z","title":"Professional English for MOFA Officers"}
+{"errors":[{"location":"body","msg":"User ID is required","path":"userId","type":"field"},{"location":"body","msg":"Invalid user ID","path":"userId","type":"field"}],"level":"error","message":"Validation errors during Khalti order creation","timestamp":"2025-07-31T11:33:49.023Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T11:34:55.772Z","title":"Professional English for MOFA Officers"}
+{"error":"Request failed with status code 401","level":"error","message":"Error during Khalti order creation","timestamp":"2025-07-31T11:35:06.296Z"}
+{"error":"Request failed with status code 503","level":"error","message":"Error during Khalti order creation","timestamp":"2025-07-31T11:54:18.987Z"}
+{"error":"Request failed with status code 503","level":"error","message":"Error during Khalti order creation","timestamp":"2025-07-31T11:54:39.821Z"}
+{"email":"bayesashok@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-31T12:27:11.105Z"}
+{"count":6,"level":"info","message":"Retrieved all courses","timestamp":"2025-07-31T12:27:11.175Z"}
+{"count":6,"level":"info","message":"Retrieved all courses","timestamp":"2025-07-31T12:31:54.143Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T12:59:34.962Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-31T12:59:42.036Z","userId":"688b491be8e10978aff3c242"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T12:59:44.864Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T12:59:44.884Z"}
+{"errors":[{"location":"params","msg":"Invalid student ID","path":"studentId","type":"field","value":"undefined"}],"level":"error","message":"Validation errors during course purchase check","timestamp":"2025-07-31T12:59:48.284Z"}
+{"errors":[{"location":"params","msg":"Invalid student ID","path":"studentId","type":"field","value":"undefined"}],"level":"error","message":"Validation errors during course purchase check","timestamp":"2025-07-31T12:59:50.054Z"}
+{"email":"bayesashok@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-31T13:00:25.018Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T13:00:25.052Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T13:00:27.386Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T13:00:27.408Z"}
+{"courseId":"67c553783964626e20f05567","level":"warn","message":"Student course record not found","studentId":"688b491be8e10978aff3c242","timestamp":"2025-07-31T13:00:28.701Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T13:00:28.752Z","title":"Professional English for MOFA Officers"}
+{"errors":[{"location":"body","msg":"User ID is required","path":"userId","type":"field"},{"location":"body","msg":"Invalid user ID","path":"userId","type":"field"}],"level":"error","message":"Validation errors during Khalti order creation","timestamp":"2025-07-31T13:00:30.949Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T13:01:39.825Z","title":"Professional English for MOFA Officers"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Khalti order initiated","timestamp":"2025-07-31T13:02:06.059Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T13:02:33.012Z","title":"Professional English for MOFA Officers"}
+{"errors":[{"location":"body","msg":"User ID is required","path":"userId","type":"field"},{"location":"body","msg":"Invalid user ID","path":"userId","type":"field"}],"level":"error","message":"Validation errors during Khalti order creation","timestamp":"2025-07-31T13:02:35.434Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T13:04:06.815Z","title":"Professional English for MOFA Officers"}
+{"email":"bayesashok@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-31T13:06:57.788Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T13:06:57.861Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T13:06:59.551Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T13:06:59.579Z"}
+{"courseId":"67c553783964626e20f05567","level":"warn","message":"Student course record not found","studentId":"688b491be8e10978aff3c242","timestamp":"2025-07-31T13:07:01.008Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T13:07:01.051Z","title":"Professional English for MOFA Officers"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Khalti order initiated","timestamp":"2025-07-31T13:07:25.083Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Khalti order initiated","timestamp":"2025-07-31T13:07:25.328Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T13:07:52.256Z","title":"Professional English for MOFA Officers"}
+{"email":"bayesashok@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-31T13:08:07.005Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T13:08:07.063Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T13:08:09.112Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T13:08:09.148Z"}
+{"courseId":"67c553783964626e20f05567","level":"warn","message":"Student course record not found","studentId":"688b491be8e10978aff3c242","timestamp":"2025-07-31T13:08:10.736Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Course details retrieved successfully","timestamp":"2025-07-31T13:08:10.774Z","title":"Professional English for MOFA Officers"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Khalti order initiated","timestamp":"2025-07-31T13:08:13.263Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"Khalti order saved successfully","orderId":"688b6ad6b9c2ce2985b027a4","timestamp":"2025-07-31T13:08:38.795Z"}
+{"courseId":"67c553783964626e20f05567","level":"info","message":"New student courses record created","timestamp":"2025-07-31T13:08:38.811Z","userId":"688b491be8e10978aff3c242"}
+{"error":"Cannot read properties of undefined (reading 'toString')","level":"error","message":"Error verifying Khalti payment","timestamp":"2025-07-31T13:08:38.820Z"}
+{"courseCount":1,"level":"info","message":"Retrieved courses for student","studentId":"688b491be8e10978aff3c242","timestamp":"2025-07-31T13:08:39.040Z"}
+{"courseCount":1,"level":"info","message":"Retrieved courses for student","studentId":"688b491be8e10978aff3c242","timestamp":"2025-07-31T13:08:55.711Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-31T13:11:47.887Z","userId":"688b491be8e10978aff3c242"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T13:12:27.993Z"}
+{"level":"info","message":"User details fetched successfully","timestamp":"2025-07-31T13:12:43.810Z","userId":"688b491be8e10978aff3c242"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T13:13:30.935Z"}
+{"email":"bayesashok@gmail.com","level":"info","message":"User logged in successfully","timestamp":"2025-07-31T13:13:52.048Z"}
+{"count":6,"filters":{},"level":"info","message":"Retrieved student view courses","sortBy":"price-lowtohigh","timestamp":"2025-07-31T13:13:52.083Z"}
+{"email":"bayesashok@gmail.com","level":"warn","loginAttempts":1,"message":"Invalid login attempt - incorrect password","timestamp":"2025-07-31T14:03:19.036Z"}
+{"email":"bayesashok@gmail.com","level":"warn","loginAttempts":2,"message":"Invalid login attempt - incorrect password","timestamp":"2025-07-31T14:03:21.122Z"}
+{"email":"bayesashok@gmail.com","level":"warn","loginAttempts":3,"message":"Invalid login attempt - incorrect password","timestamp":"2025-07-31T14:03:22.433Z"}
+{"email":"bayesashok@gmail.com","level":"warn","loginAttempts":4,"message":"Invalid login attempt - incorrect password","timestamp":"2025-07-31T14:03:23.996Z"}
+{"email":"bayesashok@gmail.com","level":"warn","message":"Account locked due to too many failed login attempts","timestamp":"2025-07-31T14:03:25.447Z"}
+{"email":"bayesashok@gmail.com","level":"warn","message":"Account locked during login attempt","remaining":294,"timestamp":"2025-07-31T14:03:31.968Z"}
+{"email":"bayesashok@gmail.com","level":"warn","message":"Invalid login attempt - user not found","timestamp":"2025-07-31T14:07:38.747Z"}
+{"email":"bayesashok@gmail.com","level":"warn","message":"Invalid login attempt - user not found","timestamp":"2025-07-31T14:07:42.602Z"}
+{"email":"bayesashok@gmail.com","level":"warn","message":"Invalid login attempt - user not found","timestamp":"2025-07-31T14:07:45.271Z"}
+{"email":"bayesashok@gmail.com","level":"warn","message":"Invalid login attempt - user not found","timestamp":"2025-07-31T14:07:48.401Z"}
+{"email":"bayesashok@gmail.com","level":"warn","message":"Invalid login attempt - user not found","timestamp":"2025-07-31T14:07:56.662Z"}
+{"email":"bayesashok@gmail.com","level":"warn","message":"Account locked during login attempt","remaining":9,"timestamp":"2025-07-31T14:08:17.043Z"}
+{"email":"bayesashok@gmail.com","level":"warn","message":"Account locked due to too many failed login attempts","timestamp":"2025-07-31T14:08:31.275Z"}
+{"email":"bayesashok@gmail.com","level":"info","message":"OTP sent to user","timestamp":"2025-07-31T14:12:14.275Z"}
+{"email":"bayesashok@gmail.com","level":"info","message":"OTP verified and user logged in successfully","timestamp":"2025-07-31T14:14:06.163Z"}
+{"email":"bayesashok@gmail.com","level":"info","message":"OTP sent to user","timestamp":"2025-07-31T18:00:32.194Z"}
+{"level":"warn","message":"Incorrect OTP provided","timestamp":"2025-07-31T18:00:53.090Z","userId":"688b491be8e10978aff3c242"}

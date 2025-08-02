@@ -46,22 +46,23 @@ if (process.env.NODE_ENV !== "test") {
   connectDB();
 }
 
-// ✅ Disable x-powered-by header
+// Disabled x-powered-by header to prevent exposing server technology
 app.disable("x-powered-by");
 
-// ✅ Middlewares
+// CORS
 app.use(cors({
-  origin: "https://localhost:5173", 
-  credentials: false,
-    methods: ["GET", "POST", "PUT", "DELETE"],
+  origin: ["https://localhost:5173", "https://192.168.1.72:5173"],
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
 app.use(express.json());
 
-// ✅ Helmet with strict CSP
+// Helmet with strict CSP
 app.use(
   helmet({
-    crossOriginEmbedderPolicy: false, // Avoid blocking some resources
+    crossOriginEmbedderPolicy: false,
   })
 );
 
@@ -70,11 +71,11 @@ app.use(
     useDefaults: true,
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "https://localhost:5173"],
+      scriptSrc: ["'self'", process.env.CLIENT_URL],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       imgSrc: ["'self'", "data:", "blob:"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      connectSrc: ["'self'", "https://localhost:5173"],
+      connectSrc: ["'self'", process.env.CLIENT_URL],
       frameSrc: ["'self'"],
       objectSrc: ["'none'"],
       upgradeInsecureRequests: [],
@@ -82,7 +83,7 @@ app.use(
   })
 );
 
-// ✅ Extra Security Headers
+// Extra Security Headers
 app.use(helmet.referrerPolicy({ policy: "no-referrer" }));
 app.use(helmet.frameguard({ action: "deny" }));
 
@@ -129,11 +130,10 @@ const sslOptions = {
   cert: fs.readFileSync(path.join(__dirname, "ssl", "cert.pem")),
 };
 
-let server;
-if (process.env.NODE_ENV !== "test") {
-  server = https.createServer(sslOptions, app).listen(PORT, () => {
-    logger.info(`✅ HTTPS server running on https://localhost:${PORT}`);
-  });
-}
+server = https.createServer(sslOptions, app).listen(PORT, "192.168.1.72", () => {
+  logger.info(`✅ HTTPS server running on https://192.168.1.72:${PORT}`);
+});
+
+
 
 module.exports = { app, server, connectDB, validateRequest };

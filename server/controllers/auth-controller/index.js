@@ -117,7 +117,7 @@ const registerUser = [
 
       const hashPassword = await bcrypt.hash(password, 10);
       const verificationToken = crypto.randomBytes(32).toString("hex");
-      const hashedVerificationToken = await bcrypt.hash(verificationToken, 10);
+      
 
       const newUser = new User({
         fName,
@@ -128,7 +128,7 @@ const registerUser = [
         phone,
         image,
         verified: false,
-        verificationToken: hashedVerificationToken,
+        verificationToken,
         lastPasswordChange: Date.now(),
       });
 
@@ -175,18 +175,14 @@ const verifyEmail = async (req, res) => {
     const { token } = req.query;
     const sanitizedToken = xss(token);
 
-    const user = await User.findOne({ verificationToken: { $ne: null } });
+    // Find user with matching verification token
+    const user = await User.findOne({ verificationToken: sanitizedToken });
     if (!user) {
       logger.warn('Invalid or expired verification token', { token: sanitizedToken });
       return res.status(400).json({ success: false, message: "Invalid or expired token" });
     }
 
-    const isTokenValid = await bcrypt.compare(sanitizedToken, user.verificationToken);
-    if (!isTokenValid) {
-      logger.warn('Invalid verification token', { token: sanitizedToken });
-      return res.status(400).json({ success: false, message: "Invalid or expired token" });
-    }
-
+    // Update user verification status
     user.verified = true;
     user.verificationToken = null;
     await user.save();
@@ -311,12 +307,11 @@ const loginUser = [
           _id: checkUser._id,
           fName: checkUser.fName,
           email: checkUser.email,
-          role: checkUser.role,
           phone: checkUser.phone,
           image: checkUser.image,
         },
-        "JWT_SECRET",
-        { expiresIn: "120m" }
+        process.env.JWT_SECRET_KEY,
+        { expiresIn: "24h" }
       );
 
       let message = "Logged in successfully";

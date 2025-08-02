@@ -23,7 +23,7 @@ function StudentViewCommonHeader() {
         </button>
         <Link to="/home" className="flex items-center hover:text-gray-200 transition-all">
           <GraduationCap className="h-9 w-9 mr-3" />
-          <span className="font-extrabold text-3xl">Sikshyalaya</span>
+          <span className="font-extrabold text-3xl">Padhnapaiincha</span>
         </Link>
       </div>
 
@@ -38,10 +38,10 @@ function StudentViewCommonHeader() {
         </Button>
         <Button
           variant="ghost"
-          onClick={() => navigate("/quiz")}
+          onClick={() => navigate("/profile")}
           className="text-xl font-bold transform transition-all hover:scale-105"
         >
-          Quiz Hub
+          My Profile
         </Button>
         <Button
           variant="ghost"

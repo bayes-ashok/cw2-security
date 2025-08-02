@@ -30,9 +30,11 @@ export default defineConfig({
     },
   },
   server: {
+        host: "0.0.0.0",  // ✅ allow access from any IP
+
     https: {
-      key: fs.readFileSync(path.resolve(__dirname, "ssl/key.pem")),
-      cert: fs.readFileSync(path.resolve(__dirname, "ssl/cert.pem")),
+      key: fs.readFileSync(path.resolve(__dirname, "ssl/localhost-key.pem")),
+      cert: fs.readFileSync(path.resolve(__dirname, "ssl/localhost-cert.pem")),
     },
   },
 });

@@ -16,7 +16,7 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/verify-otp", loginLimiter, verifyOTP);
 router.get("/verify-email", verifyEmail);
-router.put("/update", authenticateMiddleware, updateUserDetails);
+router.put("/update", updateUserDetails);
 router.get("/getDetails", authenticateMiddleware, getUserDetails);
 router.get("/check-auth", authenticateMiddleware, (req, res) => {
   const user = req.user;

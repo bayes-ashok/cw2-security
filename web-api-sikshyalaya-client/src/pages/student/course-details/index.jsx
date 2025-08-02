@@ -260,7 +260,7 @@ function StudentViewCourseDetailsPage() {
               {/* Khalti Payment Button */}
               <button
                 onClick={async () => {
-                  console.log("hi")
+                  console.log("hi");
                   const paymentPayload = {
                     userId: auth?.user?._id,
                     orderStatus: "pending",
@@ -277,10 +277,19 @@ function StudentViewCourseDetailsPage() {
                   };
 
                   try {
+                    const accessToken =
+                      JSON.parse(sessionStorage.getItem("accessToken")) || "";
+
                     const response = await axios.post(
                       "https://localhost:443/student/order/create-khalti",
-                      paymentPayload
+                      paymentPayload,
+                      {
+                        headers: {
+                          Authorization: `Bearer ${accessToken}`,
+                        },
+                      }
                     );
+
                     if (response.data.success) {
                       window.location.href = response.data.payment_url; // Redirect to Khalti payment URL
                     } else {
@@ -288,7 +297,7 @@ function StudentViewCourseDetailsPage() {
                     }
                   } catch (error) {
                     console.error(error);
-                    alert(error)
+                    alert(error);
                   }
                 }}
                 className="w-auto h-auto mx-auto flex"

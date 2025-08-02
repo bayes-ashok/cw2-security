@@ -19,7 +19,7 @@ const authenticateAdmin = async (req, res, next) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    const payload = verifyToken(token, "JWT_SECRET");
+    const payload = verifyToken(token, process.env.JWT_SECRET_KEY);
 
     // ✅ Attach user details
     req.user = {

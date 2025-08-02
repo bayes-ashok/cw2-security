@@ -95,7 +95,7 @@ function App() {
         <Route path="payment-return" element={<PaymentReturnPage />} />
         <Route path="paypal-return" element={<PaypalPaymentReturnPage />} />
         <Route path="student-courses" element={<StudentCoursesPage />} />
-        <Route path="quiz" element={<UpdateProfile />} />
+        <Route path="profile" element={<UpdateProfile />} />
         <Route
           path="course-progress/:id"
           element={<StudentViewCourseProgressPage />}
